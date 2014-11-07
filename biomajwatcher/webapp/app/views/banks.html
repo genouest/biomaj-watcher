@@ -1,0 +1,15 @@
+<div class="row">
+<h1>Available banks</h1>
+</div>
+<div class="row">
+
+<table class="table">
+  <thead>
+    <th>Name</th><th>Type</th><th>Production Release</th>
+  </thead>
+  <tbody ng-repeat="b in banks">
+    <tr><td>{{b.name}}</td><td>{{b.properties.type}}</td><td>{{b.release}}</td></tr>
+  </tbody>
+</table>
+
+</div>
