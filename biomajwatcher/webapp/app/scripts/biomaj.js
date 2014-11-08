@@ -37,16 +37,19 @@ angular.module('biomaj').controller('banksCtrl',
       for(var i=0;i<banks.length;i++) {
         var bank = banks[i];
         var release = '';
+        var formats = [];
         if (bank['current'] !== undefined && bank['current']!== null) {
           for(var p=0;p<bank['production'].length;p++) {
             var prod = bank['production'][p];
             if (bank['current'] === prod['session']) {
               release = prod['release'];
+              formats = prod['formats']
               break;
             }
           }
         }
         bank['release'] = release;
+        bank['formats'] = formats.join();
       }
       $scope.banks = banks;
     });

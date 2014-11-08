@@ -1,1 +1,7 @@
 body { padding-top: 70px; }
+
+
+.blist tbody tr {
+  color: black;
+  
+                }

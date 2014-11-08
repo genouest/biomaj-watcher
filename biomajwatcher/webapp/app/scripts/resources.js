@@ -7,7 +7,8 @@
         return $resource('/bank', {}, {
             list: {
                 method: 'GET',
-                isArray: true
+                isArray: true,
+                cache: true
             }
         });
     }
