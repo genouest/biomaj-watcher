@@ -1,0 +1,23 @@
+<h1><a ng-href="#/bank"><span class="glyphicon glyphicon-chevron-left"> </span></a> {{name}}</h1>
+<div class="row">
+  <div class="col-sm-12 col-md-6">
+    <h2>Properties</h2>
+    <div>Owner: {{ bank.properties.owner}}</div>
+    <div>Type: {{ bank.properties.type}}</div>
+  </div>
+  <div class="col-sm-12 col-md-6">
+    <h2>Release directories</h2>
+    <div ng-repeat="p in bank.production">
+      <!--
+            production = { 'release': self.session.get('release'),
+                      'session': self.session._session['id'],
+                      'formats': self.session._session['formats'].keys(),
+                      'data_dir': self.config.get('data.dir'),
+                      'prod_dir': self.session.get_release_directory()}
+      -->
+      <div>Release: {{p.release}}</div>
+      <div>Formats: {{p.formats}}</div>
+      <div>Directory: {{p.data_dir}}/{{p.prod_dir}}</div>
+    </div>
+  </div>
+</div>

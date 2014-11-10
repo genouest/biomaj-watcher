@@ -6,9 +6,15 @@
     function Bank($resource) {
         return $resource('/bank', {}, {
             list: {
-                method: 'GET',
-                isArray: true,
-                cache: true
+              method: 'GET',
+              isArray: true,
+              cache: true
+            },
+            get: {
+              url: '/bank/:name',
+              method: 'GET',
+              isArray: false,
+              cache: true
             }
         });
     }

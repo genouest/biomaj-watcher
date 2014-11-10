@@ -15,6 +15,10 @@ config(['$routeProvider','$logProvider',
             templateUrl: 'views/banks.html',
             controller: 'banksCtrl'
         });
+        $routeProvider.when('/bank/:name', {
+            templateUrl: 'views/bank.html',
+            controller: 'bankCtrl'
+        });
         $routeProvider.otherwise({
             redirectTo: '/bank'
         });
@@ -29,6 +33,12 @@ angular.module('biomaj').controller('biomajCtrl',
         $rootScope.closeAlert = function (index) {
             $rootScope.alerts.splice(index, 1);
         };
+    });
+
+angular.module('biomaj').controller('bankCtrl',
+    function ($scope, $routeParams, $log, Bank) {
+      $scope.name = $routeParams.name;
+      $scope.bank = Bank.get({'name': $routeParams.name});
     });
 
 angular.module('biomaj').controller('banksCtrl',

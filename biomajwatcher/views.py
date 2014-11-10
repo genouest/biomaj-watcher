@@ -17,15 +17,30 @@ def load_config(request):
 
 @view_config(route_name='home')
 def my_view(request):
-    #return {'project': 'biomaj-watcher'}
-    return HTTPFound(request.static_url('biomajwatcher:webapp/app/'))
+  #return {'project': 'biomaj-watcher'}
+  return HTTPFound(request.static_url('biomajwatcher:webapp/app/'))
 
+
+@view_config(route_name='bankdetails', renderer='json', request_method='GET')
+def bank_details(request):
+  '''
+  Get a bank
+
+  :param request: HTTP params
+              matchdict keys:
+                'id' Bank name
+  :type request: IMultiDict
+  :return: json - Bank
+  '''
+  load_config(request)
+  bank = Bank(request.matchdict['id'])
+  return bank.bank
 
 @view_config(route_name='bank', renderer='json', request_method='GET')
 def bank_list(request):
-    load_config(request)
-    banks = Bank.list()
-    bank_list = []
-    for bank in banks:
-      bank_list.append(bank)
-    return bank_list
+  load_config(request)
+  banks = Bank.list()
+  bank_list = []
+  for bank in banks:
+    bank_list.append(bank)
+  return bank_list

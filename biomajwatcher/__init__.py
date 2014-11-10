@@ -25,6 +25,7 @@ def main(global_config, **settings):
     config.add_route('home', '/')
 
     config.add_route('bank', '/bank')
+    config.add_route('bankdetails', '/bank/{id}')
 
     config.scan()
 
