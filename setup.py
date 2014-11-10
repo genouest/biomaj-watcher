@@ -13,7 +13,8 @@ requires = [
     'pyramid_chameleon',
     'pyramid_debugtoolbar',
     'waitress',
-    'pymongo'
+    'pymongo',
+    'py-bcrypt'
     ]
 
 setup(name='biomaj-watcher',

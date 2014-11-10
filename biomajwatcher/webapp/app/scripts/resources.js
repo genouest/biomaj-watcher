@@ -17,10 +17,44 @@
               cache: true
             }
         });
+    };
+
+    function Logout($resource) {
+      return $resource('/logout');
     }
+
+    function User($resource) {
+        return $resource('/auth', {}, {
+            list: {
+              method: 'GET',
+              isArray: true,
+              cache: true
+            },
+            get: {
+              url: '/user/:name',
+              method: 'GET',
+              isArray: false,
+              cache: true
+            },
+            is_authenticated: {
+              url: '/auth',
+              method: 'GET',
+              isArray: false,
+              cache: false
+            },
+            authenticate: {
+              url: '/auth/:name',
+              method: 'POST',
+              isArray: false,
+              cache: false
+            }
+        });
+    };
 
 
   angular.module('biomaj.resources', ['ngResource'])
-    .factory('Bank', Bank);
+    .factory('Bank', Bank)
+    .factory('User', User)
+    .factory('Logout', Logout);
 
 }());

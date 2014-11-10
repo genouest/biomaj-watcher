@@ -19,6 +19,10 @@ config(['$routeProvider','$logProvider',
             templateUrl: 'views/bank.html',
             controller: 'bankCtrl'
         });
+        $routeProvider.when('/login', {
+            templateUrl: 'views/login.html',
+            controller: 'LoginCtrl'
+        });
         $routeProvider.otherwise({
             redirectTo: '/bank'
         });
@@ -34,6 +38,47 @@ angular.module('biomaj').controller('biomajCtrl',
             $rootScope.alerts.splice(index, 1);
         };
     });
+
+angular.module('biomaj').controller('UserCtrl',
+  function($scope, $rootScope, $routeParams, $log, User, Logout) {
+
+    $rootScope.$on('LoginCtrl.login', function (event, user) {
+      $scope.user = user;
+      $scope.is_logged = true;
+    });
+
+
+    User.is_authenticated().$promise.then(function(data) {
+        if(data.user != null) {
+         $scope.user = data.user;
+         $scope.user['is_admin'] = data.is_admin;
+         $scope.is_logged = true;
+       }
+       });
+
+    $scope.logout = function() {
+      Logout.get().$promise.then(function(){
+        $scope.user = null;
+        $scope.is_logged = false
+      });
+    };
+  });
+
+angular.module('biomaj').controller('LoginCtrl',
+  function ($scope, $rootScope, $routeParams, $log, User) {
+    $scope.userid = '';
+    $scope.password = '';
+    $scope.auth = function(user_id, password) {
+       User.authenticate({'name': user_id},{'password': password}).$promise.then(function(data) {
+           if(data.user != null) {
+            $scope.user = data.user;
+            $scope.user['is_admin'] = data.is_admin;
+            $rootScope.$broadcast('LoginCtrl.login', $scope.user);
+          }
+          });
+    };
+  });
+
 
 angular.module('biomaj').controller('bankCtrl',
     function ($scope, $routeParams, $log, Bank) {
