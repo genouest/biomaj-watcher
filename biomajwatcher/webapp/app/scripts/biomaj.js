@@ -125,7 +125,7 @@ angular.module('biomaj').controller('sessionLogCtrl',
     });
 
 angular.module('biomaj').controller('bankCtrl',
-    function ($scope, $routeParams, $log, Bank, Auth) {
+    function ($scope, $routeParams, $log, Bank, BankStatus, Auth) {
       if(Auth.isConnected()) {
         $scope.user = Auth.getUser();
       }
@@ -133,6 +133,23 @@ angular.module('biomaj').controller('bankCtrl',
         $scope.user = null;
       }
       $scope.name = $routeParams.name;
+
+      BankStatus.get({'name': $routeParams.name}).$promise.then(function(data) {
+        if(data!=null) {
+          var keys = [];
+          for(var k in data) {
+            //this.substring( 0, str.length ) === str
+            if(k.substring(0, 1) !== '$') {
+              keys.push(k);
+            }
+          }
+          if(keys.length>0) {
+            $scope.status = data;
+            $scope.keys = keys
+          }
+        }
+      });
+
       Bank.get({'name': $routeParams.name}).$promise.then(function(data) {
         $scope.bank = data;
         var last_update = data['last_update_session'];

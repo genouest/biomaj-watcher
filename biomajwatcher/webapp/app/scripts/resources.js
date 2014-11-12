@@ -3,6 +3,9 @@
 (function () {
   'use strict';
 
+    function BankStatus($resource) {
+      return $resource('/bank/:name/status');
+    };
 
     function Bank($resource) {
         return $resource('/bank', {}, {
@@ -56,6 +59,7 @@
 
   angular.module('biomaj.resources', ['ngResource'])
     .factory('Bank', Bank)
+    .factory('BankStatus', BankStatus)
     .factory('User', User)
     .factory('Logout', Logout);
 

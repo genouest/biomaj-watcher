@@ -30,14 +30,28 @@
 <div class="row" ng-if="user.is_admin">
   <div class="col-sm-12 col-md-6">
 
-  <div class="panel panel-default">
-    <div class="panel-heading">Last update session: {{last_update_session.release}}</div>
-    <div class="panel-body">
-      <div><h4>Log file</h4><a ng-href="#/bank/{{name}}/log/{{last_update_session.id}}">{{last_update_session.log_file}}</a></div>
-        <div><h4>Workflow</h4></div>
-        <div class="status" ng-repeat="(step, status) in last_update_session.status">
-          <div class="status_{{status}}">{{step}}</div>
+    <div class="panel panel-default">
+      <div class="panel-heading">Last update session: {{last_update_session.release}}</div>
+        <div class="panel-body">
+          <div><h4>Log file</h4><a ng-href="#/bank/{{name}}/log/{{last_update_session.id}}">{{last_update_session.log_file}}</a></div>
+          <div><h4>Workflow</h4></div>
+          <div class="status" ng-repeat="(step, status) in last_update_session.status">
+            <div class="status_{{status}}">{{step}}</div>
+          </div>
         </div>
+    </div>
+
+  </div>
+
+  <div class="col-sm-12 col-md-6" ng-if="status">
+
+    <div class="panel panel-default">
+      <div class="panel-heading">Current workflow status</div>
+      <div class="panel-body">
+        <div class="" ng-repeat="step in keys">
+          <div>{{step}}: {{status[step]['status']}} -- {{status[step]['progress']}}</div>
+        </div>
+
       </div>
     </div>
   </div>

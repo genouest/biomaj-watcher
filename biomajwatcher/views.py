@@ -45,6 +45,14 @@ def check_user_pw(username, password):
     else:
         return None
 
+@view_config(route_name='bankstatus', renderer='json', request_method='GET')
+def bank_status(request):
+  bank = Bank(request.matchdict['id'])
+  if 'status' not in bank.bank:
+    return HTTPNotFound('no current status')
+  return bank.get_status()
+
+
 @view_config(route_name='is_auth', renderer='json', request_method='GET')
 def is_auth_user(request):
   settings = request.registry.settings
