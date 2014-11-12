@@ -1,23 +1,45 @@
 <h1><a ng-href="#/bank"><span class="glyphicon glyphicon-chevron-left"> </span></a> {{name}}</h1>
 <div class="row">
   <div class="col-sm-12 col-md-6">
-    <h2>Properties</h2>
-    <div>Owner: {{ bank.properties.owner}}</div>
-    <div>Type: {{ bank.properties.type}}</div>
+
+    <div class="panel panel-default">
+      <div class="panel-heading">Properties</div>
+      <div class="panel-body">
+        <div>Owner: {{ bank.properties.owner}}</div>
+        <div>Type: {{ bank.properties.type}}</div>
+      </div>
+    </div>
+
   </div>
   <div class="col-sm-12 col-md-6">
-    <h2>Release directories</h2>
-    <div ng-repeat="p in bank.production">
-      <!--
-            production = { 'release': self.session.get('release'),
-                      'session': self.session._session['id'],
-                      'formats': self.session._session['formats'].keys(),
-                      'data_dir': self.config.get('data.dir'),
-                      'prod_dir': self.session.get_release_directory()}
-      -->
-      <div>Release: {{p.release}}</div>
-      <div>Formats: {{p.formats}}</div>
-      <div>Directory: {{p.data_dir}}/{{p.prod_dir}}</div>
+
+    <div class="panel panel-default">
+      <div class="panel-heading">Release directories</div>
+      <div class="panel-body">
+        <div ng-repeat="p in bank.production">
+          <div>Release: {{p.release}} <a ng-href="#/bank/{{name}}/{{p.release}}"><span class="glyphicon glyphicon-eye-open"> </span></a></div>
+          <div>Formats: {{p.formats}}</div>
+          <div>Directory: {{p.data_dir}}/{{p.prod_dir}}</div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+</div>
+<div class="row" ng-if="user.is_admin">
+  <div class="col-sm-12 col-md-6">
+
+  <div class="panel panel-default">
+    <div class="panel-heading">Last update session: {{last_update_session.release}}</div>
+    <div class="panel-body">
+      <div><h4>Log file</h4><a ng-href="#/bank/{{name}}/log/{{last_update_session.id}}">{{last_update_session.log_file}}</a></div>
+        <div><h4>Workflow</h4></div>
+        <div class="status" ng-repeat="(step, status) in last_update_session.status">
+          <div class="status_{{status}}">{{step}}</div>
+        </div>
+      </div>
     </div>
   </div>
+
 </div>

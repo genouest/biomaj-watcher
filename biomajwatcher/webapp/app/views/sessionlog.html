@@ -1,0 +1,11 @@
+<h1><a ng-href="#/bank/{{bank}}"><span class="glyphicon glyphicon-chevron-left"> </span></a> {{bank}} / {{session}}</h1>
+
+<div class="row">
+  <div class="sessionlog" ui-codemirror="{
+      lineNumbers: true,
+      theme:'twilight',
+      readOnly: 'nocursor',
+      lineWrapping : true,
+      mode: 'text/plain'
+    }" ng-model="log" ></div>
+</div>

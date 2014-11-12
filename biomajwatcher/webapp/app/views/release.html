@@ -1,0 +1,18 @@
+<h1><a ng-href="#/bank/{{name}}"><span class="glyphicon glyphicon-chevron-left"> </span></a> {{name}}/{{release}}</h1>
+<div class="row">
+
+  <div class="panel panel-default">
+    <div class="panel-heading">Properties</div>
+    <div class="panel-body">
+      <div>Release: {{production.release}}</div>
+      <div>Formats: {{production.formats}}</div>
+      <div>Directory: {{production.data_dir}}/{{production.prod_dir}}</div>
+      <div>Log file: <a ng-href="#/bank/{{name}}/log/{{session.id}}">{{session.log_file}}</a></div>
+    </div>
+  </div>
+
+</div>
+<div class="row">
+
+
+</div>

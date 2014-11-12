@@ -1,5 +1,27 @@
 body { padding-top: 70px; }
 
+.CodeMirror {
+  min-height: 600px;
+}
+
+.panel-body {
+  color: black;
+}
+
+.status div {
+  border-style: solid;
+  border-width: 0.2em;
+  text-align: center;
+  color: black;
+}
+
+.status_true {
+  background-color: #449d44;
+}
+
+.status_false {
+  background-color: #c9302c
+}
 
 .blist tbody tr {
   color: black;

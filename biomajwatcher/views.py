@@ -1,7 +1,10 @@
 from pyramid.view import view_config
-from pyramid.httpexceptions import HTTPFound
+from pyramid.httpexceptions import HTTPFound, HTTPNotFound
 from pyramid.security import authenticated_userid, remember, forget
+from pyramid.renderers import render_to_response
+from pyramid.response import Response, FileResponse
 
+import os
 import json
 from bson import json_util
 from bson.objectid import ObjectId
@@ -100,3 +103,21 @@ def bank_list(request):
   for bank in banks:
     bank_list.append(bank)
   return bank_list
+
+@view_config(route_name='sessionlog', request_method='GET')
+def session_log(request):
+  bank = Bank(request.matchdict['id'])
+  log_file = None
+  last_update = bank.bank['last_update_session']
+
+  for session in bank.bank['sessions']:
+    if session['id'] == float(request.matchdict['session']):
+      log_file = session['log_file']
+      break
+  if log_file is None or not os.path.exists(log_file):
+    return HTTPNotFound('No matching log file found')
+  else:
+    response = FileResponse(log_file,
+                                request=request,
+                                content_type='text/plain')
+    return response

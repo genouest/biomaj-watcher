@@ -3,6 +3,7 @@
 (function () {
   'use strict';
 
+
     function Bank($resource) {
         return $resource('/bank', {}, {
             list: {
@@ -24,6 +25,7 @@
     }
 
     function User($resource) {
+        var user = null;
         return $resource('/auth', {}, {
             list: {
               method: 'GET',
