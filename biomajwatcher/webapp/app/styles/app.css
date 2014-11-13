@@ -1,5 +1,9 @@
 body { padding-top: 70px; }
 
+#formats {
+  color: black;
+}
+
 .CodeMirror {
   min-height: 600px;
 }

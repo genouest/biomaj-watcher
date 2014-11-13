@@ -164,6 +164,7 @@ angular.module('biomaj').controller('bankCtrl',
 
 angular.module('biomaj').controller('bankReleaseCtrl',
     function ($scope, $routeParams, $log, Bank) {
+      $scope.showHide = false;
       $scope.name = $routeParams.name;
       $scope.release = $routeParams.release;
       Bank.get({'name': $routeParams.name}).$promise.then(function(data) {
@@ -194,7 +195,7 @@ angular.module('biomaj').controller('banksCtrl',
               var prod = bank['production'][p];
               if (bank['current'] === prod['session']) {
                 release = prod['release'];
-                formats = prod['formats']
+                formats = prod['formats'];
                 break;
               }
             }

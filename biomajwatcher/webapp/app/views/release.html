@@ -5,7 +5,12 @@
     <div class="panel-heading">Properties</div>
     <div class="panel-body">
       <div>Release: {{production.release}}</div>
-      <div>Formats: {{production.formats}}</div>
+      <div class="row">
+        <div class="col-sm-6 col-md-4">Formats:<ul ng-repeat="f in production.formats"><li>{{f}}</li></ul></div>
+        <div class="col-sm-6 col-md-4"><button type="button" class="btn btn-primary btn-tiny" data-toggle="modal" data-target="#formats">
+          Show format files
+        </button></div>
+      </div>
       <div>Directory: {{production.data_dir}}/{{production.prod_dir}}</div>
       <div>Log file: <a ng-href="#/bank/{{name}}/log/{{session.id}}">{{session.log_file}}</a></div>
     </div>
@@ -15,4 +20,40 @@
 <div class="row">
 
 
+</div>
+
+<!-- Modal -->
+<div class="modal fade" id="formats" tabindex="-1" role="dialog" aria-labelledby="formatsModal" >
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+        <h4 class="modal-title" id="formatsModal">Formats</h4>
+      </div>
+      <div class="modal-body">
+        <div ng-repeat="(f,values) in session.formats">
+
+          <div class="panel panel-default">
+            <div class="panel-heading">{{f}}</div>
+            <div class="panel-body">
+              <h4>Tags</h4>
+              <div ng-repeat="value in values">
+                <span class="badge" ng-repeat="(tagname,tagvalue) in value.tags">
+                  {{tagname}}: {{tagvalue}}
+                </span>
+                <h4>Files</h4>
+                <ul ng-repeat="file in value.files">
+                  <li>{{file}}</li>
+                </ul>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+      </div>
+    </div>
+  </div>
 </div>

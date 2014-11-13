@@ -18,7 +18,7 @@
       <div class="panel-body">
         <div ng-repeat="p in bank.production">
           <div>Release: {{p.release}} <a ng-href="#/bank/{{name}}/{{p.release}}"><span class="glyphicon glyphicon-eye-open"> </span></a></div>
-          <div>Formats: {{p.formats}}</div>
+          <div>Formats: <ul ng-repeat="f in p.formats"><li>{{f}}</li></ul></div>
           <div>Directory: {{p.data_dir}}/{{p.prod_dir}}</div>
         </div>
       </div>
