@@ -134,6 +134,51 @@ angular.module('biomaj').controller('bankCtrl',
       }
       $scope.name = $routeParams.name;
 
+      $scope.get_keys = function(obj) {
+        var keys = [];
+        for(var k in obj) keys.push(k);
+        return keys;
+      }
+
+      /**
+      * Return an array of process name/process status
+      */
+      $scope.get_proc_status = function(process, proc) {
+        if(process[proc]==undefined) { return []; }
+        if(proc == 'postprocess') {
+          var blocks = $scope.get_keys(process[proc]);
+          var res = [];
+          for(var i = 0;i < blocks.length; i++) {
+              var metas =$scope.get_keys(process[proc][blocks[i]]);
+              for(var j = 0;j < metas.length; j++) {
+                var procs = $scope.get_keys(process[proc][blocks[i]][metas[j]]);
+                for(var k = 0;k < procs.length; k++) {
+                    var elt = {};
+                    elt['name'] = blocks[i]+'.'+metas[j]+'.'+procs[k];
+                    elt['status'] = process[proc][blocks[i]][metas[j]][procs[k]];
+                    res.push(elt);
+                }
+              }
+          }
+        }
+        else {
+            var metas = $scope.get_keys(process[proc]);
+            var res = [];
+                for(var j = 0;j < metas.length; j++) {
+                  var procs = $scope.get_keys(metas[j]);
+                  for(var k = 0;k < procs.length; k++) {
+                    var elt = {};
+                    elt['name'] = metas[j]+'.'+procs[k];
+                    elt['status'] = process[proc][metas[j]][procs[k]];
+                    res.push(elt);
+                  }
+                }
+        }
+        return res;
+      };
+
+      $scope.updateworkflow = ['init', 'check', 'depends', 'preprocess', 'release','download', 'postprocess', 'publish', 'over'];
+
       BankStatus.get({'name': $routeParams.name}).$promise.then(function(data) {
         if(data!=null) {
           var keys = [];
@@ -185,6 +230,7 @@ angular.module('biomaj').controller('bankReleaseCtrl',
 
 angular.module('biomaj').controller('banksCtrl',
     function ($scope, $log, Bank) {
+
       Bank.list().$promise.then(function(banks) {
         for(var i=0;i<banks.length;i++) {
           var bank = banks[i];

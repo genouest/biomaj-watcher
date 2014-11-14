@@ -35,8 +35,20 @@
         <div class="panel-body">
           <div><h4>Log file</h4><a ng-href="#/bank/{{name}}/log/{{last_update_session.id}}">{{last_update_session.log_file}}</a></div>
           <div><h4>Workflow</h4></div>
-          <div class="status" ng-repeat="(step, status) in last_update_session.status">
-            <div class="status_{{status}}">{{step}}</div>
+          <div class="status" ng-repeat="step in updateworkflow">
+            <div class="status_{{last_update_session.status[step]}}">{{step}}</div>
+
+            <div ng-if="get_keys(last_update_session.process[step]).length>0" ng-init='procs=get_proc_status(last_update_session.process, step)'>
+                <div ng-repeat="procdetail in procs">
+                    <div ng-if="procdetail.status == true">
+                      <span class="label label-success">{{procdetail.name}}</span>
+                    </div>
+                    <div ng-if="procdetail.status != true">
+                      <span class="label label-danger">{{procdetail.name}}</span>
+                    </div>
+                </div>
+            </div>
+
           </div>
         </div>
     </div>

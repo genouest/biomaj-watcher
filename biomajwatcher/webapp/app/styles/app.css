@@ -12,7 +12,7 @@ body { padding-top: 70px; }
   color: black;
 }
 
-.status div {
+.status  {
   border-style: solid;
   border-width: 0.2em;
   text-align: center;
