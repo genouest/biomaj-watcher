@@ -6,6 +6,12 @@ License: AGPL
 
 in development with biomaj
 
+# Running
+
+Dev: pserve development.ini
+
+Prod: to be documented, should use gunicorn
+
 
 ## Admin user creation
 
