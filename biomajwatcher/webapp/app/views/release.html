@@ -11,6 +11,7 @@
           Show format files
         </button></div>
       </div>
+      <div>Types: <ul ng-repeat="f in production.types"><li>{{f}}</li></ul></div>
       <div>Directory: {{production.data_dir}}/{{production.prod_dir}}</div>
       <div>Log file: <a ng-href="#/bank/{{name}}/log/{{session.id}}">{{session.log_file}}</a></div>
     </div>
@@ -36,8 +37,10 @@
           <div class="panel panel-default">
             <div class="panel-heading">{{f}}</div>
             <div class="panel-body">
-              <h4>Tags</h4>
               <div ng-repeat="value in values">
+                <h4>Types</h4>
+                {{ value.types.join(',')}}
+                <h4>Tags</h4>
                 <span class="badge" ng-repeat="(tagname,tagvalue) in value.tags">
                   {{tagname}}: {{tagvalue}}
                 </span>
@@ -45,6 +48,7 @@
                 <ul ng-repeat="file in value.files">
                   <li>{{file}}</li>
                 </ul>
+                <hr/>
               </div>
             </div>
           </div>
