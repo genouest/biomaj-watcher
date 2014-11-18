@@ -21,6 +21,12 @@ def load_config(request):
     global_properties = settings['global_properties']
     BiomajConfig.load_config(global_properties)
 
+
+@view_config(route_name='stat', renderer='json', request_method='GET')
+def stat(request):
+  stats = Bank.get_banks_disk_usage()
+  return stats
+
 @view_config(route_name='home')
 def my_view(request):
   #return {'project': 'biomaj-watcher'}

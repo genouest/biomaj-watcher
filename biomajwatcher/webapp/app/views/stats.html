@@ -1,0 +1,13 @@
+<div class="row">
+  <div class="col-md-2"><button class="btn btn-primary" type="button" ng-if="bank_size">{{bank_size}}</button></div>
+  <div class="col-md-10">
+  <div ac-chart="chartType" ac-data="data" ac-config="config"  class='bankchart chart'></div>
+</div>
+</div>
+
+<div class="row">
+  <div class="col-md-2"><button class="btn btn-primary" type="button" ng-if="release_size">{{release_size}}</button></div>
+  <div class="col-md-10">
+  <div ac-chart="chartType" ac-data="release" ac-config="releaseconfig"  class='bankchart chart'></div>
+</div>
+</div>

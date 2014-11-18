@@ -55,6 +55,8 @@ def main(global_config, **settings):
     config.add_route('bankstatus', '/bank/{id}/status')
     config.add_route('sessionlog', '/bank/{id}/log/{session}')
 
+    config.add_route('stat', '/stat')
+
     config.add_route('is_auth', '/auth')
     config.add_route('auth', '/auth/{id}')
     config.add_route('logout', '/logout')

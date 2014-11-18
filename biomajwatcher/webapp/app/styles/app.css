@@ -1,5 +1,9 @@
 body { padding-top: 70px; }
 
+.bankchart {
+  height: 500px;
+}
+
 #formats {
   color: black;
 }

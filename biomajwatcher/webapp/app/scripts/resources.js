@@ -3,6 +3,16 @@
 (function () {
   'use strict';
 
+    function Stat($resource) {
+        return $resource('/stat', {}, {
+            list: {
+              method: 'GET',
+              isArray: true,
+              cache: true
+            }
+        });
+    };
+
     function BankStatus($resource) {
       return $resource('/bank/:name/status');
     };
@@ -58,6 +68,7 @@
 
 
   angular.module('biomaj.resources', ['ngResource'])
+    .factory('Stat', Stat)
     .factory('Bank', Bank)
     .factory('BankStatus', BankStatus)
     .factory('User', User)

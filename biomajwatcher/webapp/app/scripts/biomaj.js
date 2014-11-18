@@ -3,13 +3,17 @@
 'use strict';
 
 // Declare app level module which depends on filters, and services
-angular.module('biomaj', ['biomaj.resources', 'ngSanitize', 'ngCookies', 'ngRoute', 'ui.utils', 'ui.bootstrap','ui.codemirror', 'ngGrid']).
+angular.module('biomaj', ['biomaj.resources', 'ngSanitize', 'ngCookies', 'ngRoute', 'ui.utils', 'ui.bootstrap','ui.codemirror', 'ngGrid', 'angularCharts']).
 
 config(['$routeProvider','$logProvider',
     function ($routeProvider) {
         $routeProvider.when('/welcome', {
             templateUrl: 'views/welcome.html',
             controller: 'WelcomeCtrl'
+        });
+        $routeProvider.when('/stat', {
+            templateUrl: 'views/stats.html',
+            controller: 'statsCtrl'
         });
         $routeProvider.when('/bank', {
             templateUrl: 'views/banks.html',
@@ -250,5 +254,87 @@ angular.module('biomaj').controller('banksCtrl',
           bank['formats'] = formats.join();
         }
         $scope.banks = banks;
+      });
+    });
+
+angular.module('biomaj').controller('statsCtrl',
+    function ($scope, $log, Stat) {
+      $scope.config = {
+          "labels": false,
+          "title": "Banks disk usage",
+          "legend": {
+            "display": true,
+            "position": "right"
+          },
+          "mouseover": function(d) {
+            $scope.bank_size = d.data.x+": "+$scope.get_size(d.data.y[0]);
+          },
+          "click" : function(d) {
+            var bank = d.data.x;
+            $scope.releaseconfig = {
+                "labels": false,
+                "title": bank+" disk usage",
+                "legend": {
+                  "display": true,
+                  "position": "right"
+                },
+                "mouseover": function(d) {
+                  $scope.release_size = d.data.x+": "+$scope.get_size(d.data.y[0]);
+                },
+                "click" : function(d) {
+                  var bank = d.data.x;
+                },
+                "innerRadius": 0,
+                "lineLegend": "lineEnd"
+              };
+              var series = [bank];
+              var data= [];
+              var selected_bank = null;
+              var stats = $scope.stats;
+              for(var i=0;i<stats.length;i++) {
+                if(stats[i]['name']==bank) {
+                  selected_bank = stats[i];
+                  break;
+                }
+              }
+              if(selected_bank!=null) {
+
+                for(var j=0;j<selected_bank['releases'].length;j++) {
+                  var elt = {'x': selected_bank['releases'][j]['name'], 'y': [selected_bank['releases'][j]['size']]};
+                  data.push(elt);
+                }
+                $scope.release = {'series': series, 'data': data};
+              }
+          },
+          "innerRadius": 0,
+          "lineLegend": "lineEnd"
+        };
+        $scope.chartType = 'pie';
+
+      $scope.get_size = function(size) {
+        if(size > 1024*1024*1024) {
+          return Math.floor(size/(1024*1024*1024))+'Gb';
+        }
+        else if(size > 1024*1024) {
+          return Math.floor(size/(1024*1024))+'Mb';
+        }
+        else if(size > 1024) {
+          return Math.floor(size/(1024))+'Kb';
+        }
+      };
+
+      Stat.list().$promise.then(function(stats) {
+        $scope.stats = stats;
+        var series = ['banks'];
+        var data= [];
+        //var data = { 'x': 'banks', 'y': []}
+        for(var i=0;i<stats.length;i++) {
+          var elt = {'x': stats[i]['name'], 'y': [stats[i]['size']]};
+          //data['y'].push(stats[i]['size'])
+          //series.push(stats[i]['name']);
+          data.push(elt);
+        }
+
+        $scope.data = {'series': series, 'data': data};
       });
     });
