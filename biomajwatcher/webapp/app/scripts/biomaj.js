@@ -15,6 +15,10 @@ config(['$routeProvider','$logProvider',
             templateUrl: 'views/stats.html',
             controller: 'statsCtrl'
         });
+        $routeProvider.when('/search', {
+            templateUrl: 'views/search.html',
+            controller: 'searchCtrl'
+        });
         $routeProvider.when('/bank', {
             templateUrl: 'views/banks.html',
             controller: 'banksCtrl'
@@ -77,6 +81,14 @@ angular.module('biomaj').controller('UserCtrl',
         $location.path("bank");
       });
     };
+
+    $scope.search = '';
+    $scope.onSearch = function() {
+      $log.info('search '+$scope.search);
+      if($scope.search!='') {
+        $location.path('search').search({q: $scope.search});
+      }
+    }
   });
 
 angular.module('biomaj').controller('LoginCtrl',
@@ -254,6 +266,52 @@ angular.module('biomaj').controller('banksCtrl',
           bank['formats'] = formats.join();
         }
         $scope.banks = banks;
+      });
+    });
+
+angular.module('biomaj').controller('searchCtrl',
+    function ($scope, $log, $location, Search) {
+      var query = $location.search().q
+      $scope.query = query;
+      Search.list({q: query}).$promise.then(function(res) {
+        var banks = []
+        for(var i=0;i<res.length;i++){
+          var id = res[i]['_source']['bank'];
+          var bank = {};
+          var new_bank = true;
+          for(var b=0;b<banks.length;b++){
+            if(banks[b]['name'] == id)
+              bank = banks[b];
+              new_bank = false;
+              break;
+          }
+          if(new_bank) {
+            bank['name'] = id;
+            bank['release'] = [];
+            banks.push(bank);
+          }
+          var new_release = true;
+          var release = res[i]['_source']['release'];
+          var rel = [];
+          for(var r=0;r<bank['release'];r++) {
+            if(bank['release'][r]['name'] == release) {
+              rel = bank['release'][r]['elts'];
+              new_release = false;
+              break;
+            }
+          }
+          if(new_release) {
+            rel = {'name': release, 'elts': []};
+            bank['release'].push(rel);
+          }
+          rel['elts'].push({'format': res[i]['_source']['format'],
+                                            'types': res[i]['_source']['types'],
+                                            'tags': res[i]['_source']['tags']
+
+            });
+
+        }
+        $scope.result = banks;
       });
     });
 

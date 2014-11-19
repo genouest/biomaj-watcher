@@ -1,0 +1,26 @@
+<div class="row">
+  <h2>Search query</h2>
+  <span>{{query}}</span>
+</div>
+<div class="row">
+  <h2>Results</h2>
+  <div class="row" ng-repeat="prod in result">
+    <div class="panel panel-default">
+      <div class="panel-heading">{{prod.name}}</div>
+      <div class="panel-body">
+        <div ng-repeat="rel in prod.release">
+          <div><a ng-href="#/bank/{{prod.name}}/{{rel.name}}"><i class="glyphicon glyphicon-eye-open"></i> {{rel.name}}</a></div>
+          <div ng-repeat="elt in rel.elts">
+            <div>{{elt.format}} - {{elt.types.join(',')}}</div>
+            <ul ng-repeat="(tag,value) in elt.tags">
+              <li>{{tag}}: {{value}}</li>
+            </ul>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+
+  </div>
+</div>

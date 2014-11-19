@@ -55,6 +55,12 @@ def main(global_config, **settings):
     config.add_route('bankstatus', '/bank/{id}/status')
     config.add_route('sessionlog', '/bank/{id}/log/{session}')
 
+    config.add_route('search', '/search')
+
+    config.add_route('search_format', '/search/format/{format}')
+    config.add_route('search_format_type', '/search/format/{format}/type/{type}')
+    config.add_route('search_type', '/search/type/{type}')
+
     config.add_route('stat', '/stat')
 
     config.add_route('is_auth', '/auth')

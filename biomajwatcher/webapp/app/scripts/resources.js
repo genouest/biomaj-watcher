@@ -13,6 +13,16 @@
         });
     };
 
+    function Search($resource) {
+        return $resource('/search', {}, {
+            list: {
+              method: 'GET',
+              isArray: true,
+              cache: true
+            }
+        });
+    };
+
     function BankStatus($resource) {
       return $resource('/bank/:name/status');
     };
@@ -68,6 +78,7 @@
 
 
   angular.module('biomaj.resources', ['ngResource'])
+    .factory('Search', Search)
     .factory('Stat', Stat)
     .factory('Bank', Bank)
     .factory('BankStatus', BankStatus)

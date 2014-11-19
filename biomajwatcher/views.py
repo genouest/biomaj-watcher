@@ -22,6 +22,69 @@ def load_config(request):
     BiomajConfig.load_config(global_properties)
 
 
+
+def get_session_from_release(bank, release):
+  '''
+  Find matching session for release
+  '''
+  session = None
+  # Search production release matching release
+  for prod in bank['production']:
+    if prod['release'] == release or prod['prod_dir'] == release:
+      # Search session related to this production release
+      for s in bank['sessions']:
+        if s['id'] == prod['session']:
+          session = s
+          break
+      break
+  return session
+
+def get_files_matching_request(banks, selectedformat=None, selectedtype=None):
+  '''
+  Parse bank lists and production releases, and return a list of production releases with files per format
+  '''
+  res = []
+  for bank in banks:
+    for prod in bank['production']:
+      session = get_session_from_release(bank, prod['release'])
+      for sformat in session['formats'].keys():
+        if selectedformat is not None and sformat != selectedformat:
+          del session['formats'][sformat]
+        else:
+          if selectedtype is not None:
+            for files in session['formats'][sformat]:
+              if selectedtype not in files['types']:
+                del files
+
+      prod['files'] = session['formats']
+      prod['bank'] = bank['name']
+      res.append(prod)
+  return res
+
+@view_config(route_name='search_format_type', renderer='json', request_method='GET')
+def search_format_type(request):
+  bank_format = request.matchdict['format']
+  bank_type = request.matchdict['type']
+  banks = Bank.search([bank_format], [bank_type],True)
+  return get_files_matching_request(banks, bank_format, bank_type)
+
+@view_config(route_name='search_format', renderer='json', request_method='GET')
+def search_format(request):
+  bank_format = request.matchdict['format']
+  banks = Bank.search([bank_format], [],True)
+  return get_files_matching_request(banks, bank_format, None)
+
+@view_config(route_name='search_type', renderer='json', request_method='GET')
+def search_type(request):
+  bank_type = request.matchdict['type']
+  banks = Bank.search([], [bank_type],True)
+  return get_files_matching_request(banks, None, bank_type)
+
+@view_config(route_name='search', renderer='json', request_method='GET')
+def search(request):
+  req = request.params.get('q')
+  return Bank.searchindex(req)
+
 @view_config(route_name='stat', renderer='json', request_method='GET')
 def stat(request):
   stats = Bank.get_banks_disk_usage()
