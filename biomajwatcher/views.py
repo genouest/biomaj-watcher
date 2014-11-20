@@ -136,7 +136,7 @@ def check_user_pw(username, password):
 
 @view_config(route_name='bankstatus', renderer='json', request_method='GET')
 def bank_status(request):
-  bank = Bank(request.matchdict['id'])
+  bank = Bank(request.matchdict['id'], no_log=True)
   if not can_read_bank(request, bank.bank):
     return HTTPForbidden('Not authorized to access this resource')
 
@@ -192,7 +192,7 @@ def bank_details(request):
   :return: json - Bank
   '''
   #load_config(request)
-  bank = Bank(request.matchdict['id'])
+  bank = Bank(request.matchdict['id'], no_log=True)
   if not can_read_bank(request, bank.bank):
     return HTTPForbidden('Not authorized to access this resource')
   return bank.bank
@@ -209,7 +209,7 @@ def bank_list(request):
 
 @view_config(route_name='sessionlog', request_method='GET')
 def session_log(request):
-  bank = Bank(request.matchdict['id'])
+  bank = Bank(request.matchdict['id'], no_log=True)
   if not can_read_bank(request, bank.bank):
     return HTTPForbidden('Not authorized to access this resource')
   log_file = None

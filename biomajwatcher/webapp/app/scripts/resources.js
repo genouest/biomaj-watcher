@@ -15,10 +15,11 @@
                     var bank = {};
                     var new_bank = true;
                     for(var b=0;b<banks.length;b++){
-                      if(banks[b]['name'] == id)
+                      if(banks[b]['name'] == id) {
                         bank = banks[b];
                         new_bank = false;
                         break;
+                      }
                     }
                     if(new_bank) {
                       bank['name'] = id;
@@ -35,6 +36,7 @@
                         break;
                       }
                     }
+
                     if(new_release) {
                       rel = {'name': release, 'elts': []};
                       bank['release'].push(rel);
