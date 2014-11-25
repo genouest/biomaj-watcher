@@ -141,7 +141,7 @@ angular.module('biomaj').controller('sessionLogCtrl',
     });
 
 angular.module('biomaj').controller('bankCtrl',
-    function ($scope, $routeParams, $log, Bank, BankStatus, Auth) {
+    function ($scope, $routeParams, $log, $interval, Bank, BankStatus, Auth) {
       if(Auth.isConnected()) {
         $scope.user = Auth.getUser();
       }
@@ -195,32 +195,43 @@ angular.module('biomaj').controller('bankCtrl',
 
       $scope.updateworkflow = ['init', 'check', 'depends', 'preprocess', 'release','download', 'postprocess', 'publish', 'over'];
 
-      BankStatus.get({'name': $routeParams.name}).$promise.then(function(data) {
-        if(data!=null) {
-          var keys = [];
-          for(var k in data) {
-            //this.substring( 0, str.length ) === str
-            if(k.substring(0, 1) !== '$') {
-              keys.push(k);
+      $scope.get_status = function() {
+        BankStatus.get({'name': $routeParams.name}).$promise.then(function(data) {
+          if(data!=null) {
+            var keys = [];
+            for(var k in data) {
+              //this.substring( 0, str.length ) === str
+              if(k.substring(0, 1) !== '$') {
+                keys.push(k);
+              }
+            }
+            if(keys.length>0) {
+              $scope.status = data;
+              $scope.keys = keys
             }
           }
-          if(keys.length>0) {
-            $scope.status = data;
-            $scope.keys = keys
-          }
-        }
+        });
+      } ;
+
+      $scope.status_loop = $interval($scope.get_status,5000);
+      $scope.$on('$destroy', function() {
+        // Make sure that the interval is destroyed too
+        $interval.cancel($scope.status_loop);
       });
 
-      Bank.get({'name': $routeParams.name}).$promise.then(function(data) {
-        $scope.bank = data;
-        var last_update = data['last_update_session'];
-        for(var i=data['sessions'].length-1;i>=0;i--) {
-          if(data['sessions'][i]['id'] == last_update) {
-            $scope.last_update_session = data['sessions'][i];
-            break;
-          }
-        }
-      });
+      $scope.load_bank = function() {
+          Bank.get({'name': $routeParams.name}).$promise.then(function(data) {
+            $scope.bank = data;
+            var last_update = data['last_update_session'];
+            for(var i=data['sessions'].length-1;i>=0;i--) {
+              if(data['sessions'][i]['id'] == last_update) {
+                $scope.last_update_session = data['sessions'][i];
+                break;
+              }
+            }
+          });
+      };
+      $scope.load_bank();
     });
 
 angular.module('biomaj').controller('bankReleaseCtrl',

@@ -88,7 +88,7 @@
               url: '/bank/:name',
               method: 'GET',
               isArray: false,
-              cache: true
+              cache: false
             }
         });
     };

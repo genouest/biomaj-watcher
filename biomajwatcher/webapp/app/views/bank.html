@@ -1,4 +1,4 @@
-<h1><a ng-href="#/bank"><span class="glyphicon glyphicon-chevron-left"> </span></a> {{name}}</h1>
+<h1><a ng-href="#/bank"><span class="glyphicon glyphicon-chevron-left"> </span></a> {{name}} <span ng-click="load_bank();" class="glyphicon glyphicon-refresh"> </span></h1>
 <div class="row">
   <div class="col-sm-12 col-md-6">
 
@@ -59,10 +59,17 @@
   <div class="col-sm-12 col-md-6" ng-if="status">
 
     <div class="panel panel-default">
-      <div class="panel-heading">Current workflow status</div>
+      <div class="panel-heading">Current/Last workflow status</div>
       <div class="panel-body">
-        <div class="" ng-repeat="step in keys">
-          <div>{{step}}: {{status[step]['status']}} -- {{status[step]['progress']}}</div>
+        <div>Log file: <a ng-href="#/bank/{{name}}/log/{{status['session']}}">{{status['log_file']['status']}}</a></div>
+        <div class="status current_status_{{status[step]['status']}}" ng-repeat="step in updateworkflow">
+          <div>{{step}}: {{status[step]['status']}}</div>
+          <div class="" ng-if="step=='download'">{{status[step]['progress']}}/{{status[step]['total']}}</div>
+          <div class="" ng-if="step == 'postprocess' || step == 'preprocess'">
+            <div ng-repeat="(key,value) in status[step]['progress']">
+              <span class=" label status_{{value}}">{{key}}</span>
+            </div>
+          </div>
         </div>
 
       </div>

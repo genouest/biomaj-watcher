@@ -16,6 +16,14 @@ body { padding-top: 70px; }
   color: black;
 }
 
+.current_status_true {
+  background-color: #449d44;
+}
+
+.current_status_false {
+  background-color: #c9302c;
+}
+
 .status  {
   border-style: solid;
   border-width: 0.2em;
@@ -28,7 +36,7 @@ body { padding-top: 70px; }
 }
 
 .status_false {
-  background-color: #c9302c
+  background-color: #c9302c;
 }
 
 .blist tbody tr {
