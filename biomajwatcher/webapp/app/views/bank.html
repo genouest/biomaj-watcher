@@ -29,6 +29,7 @@
 
 </div>
 <div class="row" ng-if="user.is_admin">
+  <!--
   <div class="col-sm-12 col-md-6">
 
     <div class="panel panel-default">
@@ -55,11 +56,12 @@
     </div>
 
   </div>
+  -->
 
-  <div class="col-sm-12 col-md-6" ng-if="status">
+  <div class="col-sm-12 col-md-12" ng-if="status">
 
     <div class="panel panel-default">
-      <div class="panel-heading">Current/Last workflow status</div>
+      <div class="panel-heading">Current/Last workflow status [{{status['release']['progress']}}]</div>
       <div class="panel-body">
         <div>Log file: <a ng-href="#/bank/{{name}}/log/{{status['session']}}">{{status['log_file']['status']}}</a></div>
         <div class="status current_status_{{status[step]['status']}}" ng-repeat="step in updateworkflow">
