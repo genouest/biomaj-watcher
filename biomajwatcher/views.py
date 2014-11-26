@@ -21,6 +21,14 @@ def load_config(request):
     global_properties = settings['global_properties']
     BiomajConfig.load_config(global_properties)
 
+def is_admin(request):
+  settings = request.registry.settings
+  user = is_authenticated(request)
+  is_admin = False
+  if user:
+      if user['id'] in settings['admin'].split(','):
+        is_admin = True
+  return is_admin
 
 
 def get_session_from_release(bank, release):
@@ -205,6 +213,26 @@ def bank_list(request):
   for bank in banks:
     if can_read_bank(request, bank):
         bank_list.append(bank)
+  return bank_list
+
+@view_config(route_name='user', renderer='json', request_method='GET')
+def user_list(request):
+  if not is_admin(request):
+    return HTTPForbidden('Not authorized to access this resource')
+  users = BmajUser.list()
+  user_list = []
+  for user in users:
+    user_list.append(user)
+  return user_list
+
+@view_config(route_name='user_banks', renderer='json', request_method='GET')
+def user_banks(request):
+  if not is_admin(request):
+    return HTTPForbidden('Not authorized to access this resource')
+  banks = BmajUser.user_banks(request.matchdict['id'])
+  bank_list = []
+  for bank in banks:
+    bank_list.append(bank)
   return bank_list
 
 @view_config(route_name='sessionlog', request_method='GET')

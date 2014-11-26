@@ -19,6 +19,10 @@ config(['$routeProvider','$logProvider',
             templateUrl: 'views/search.html',
             controller: 'searchCtrl'
         });
+        $routeProvider.when('/user', {
+            templateUrl: 'views/users.html',
+            controller: 'userMngtCtrl'
+        });
         $routeProvider.when('/bank', {
             templateUrl: 'views/banks.html',
             controller: 'banksCtrl'
@@ -54,6 +58,24 @@ angular.module('biomaj').controller('biomajCtrl',
             $rootScope.alerts.splice(index, 1);
         };
     });
+
+angular.module('biomaj').controller('userMngtCtrl',
+  function($scope, $rootScope, $routeParams, $log, $location, User) {
+
+  User.list().$promise.then(function(data) {
+    $scope.users = data;
+  });
+
+  $scope.banks = '';
+
+  $scope.show_user_banks = function(user_name) {
+    User.banks({name: user_name}).$promise.then(function(data){
+      $scope.banks = data;
+      $scope.selected_user = user_name;
+    });
+  };
+
+});
 
 angular.module('biomaj').controller('UserCtrl',
   function($scope, $rootScope, $routeParams, $log, $location, User, Auth, Logout) {

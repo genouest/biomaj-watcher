@@ -50,6 +50,9 @@ def main(global_config, **settings):
     config.add_static_view('app', 'biomajwatcher:webapp/app')
     config.add_route('home', '/')
 
+    config.add_route('user','/user')
+    config.add_route('user_banks','/user/{id}/banks')
+
     config.add_route('bank', '/bank')
     config.add_route('bankdetails', '/bank/{id}')
     config.add_route('bankstatus', '/bank/{id}/status')

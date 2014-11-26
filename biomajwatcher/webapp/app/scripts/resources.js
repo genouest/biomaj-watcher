@@ -101,6 +101,7 @@
         var user = null;
         return $resource('/auth', {}, {
             list: {
+              url: '/user',
               method: 'GET',
               isArray: true,
               cache: true
@@ -121,6 +122,12 @@
               url: '/auth/:name',
               method: 'POST',
               isArray: false,
+              cache: false
+            },
+            banks: {
+              url: '/user/:name/banks',
+              method: 'GET',
+              isArray: true,
               cache: false
             }
         });
