@@ -13,7 +13,8 @@ from biomaj.config import BiomajConfig
 
 parser = argparse.ArgumentParser(description='Initialize database content.')
 parser.add_argument('--config')
-parser.add_argument('--rootpwd')
+parser.add_argument('--user')
+parser.add_argument('--pwd')
 args = parser.parse_args()
 
 if not args.config:
@@ -25,10 +26,14 @@ BiomajConfig.load_config(args.config)
 from biomaj.user import BmajUser
 from hashlib import sha1
 
-rootuser = BmajUser('admin')
+if not args.user:
+    print 'user parameter is missing'
+    sys.exit(1)
 
-if args.rootpwd:
-    pwd = args.rootpwd
+rootuser = BmajUser(args.user)
+
+if args.pwd:
+    pwd = args.pwd
 else:
     pwd = sha1("%s" % randint(1, 1e99)).hexdigest()
 

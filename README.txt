@@ -15,7 +15,7 @@ Prod: to be documented, should use gunicorn
 
 ## Admin user creation
 
-python db/seed.py --config production.ini --rootpwd xxxx
+python db/seed.py --config production.ini --user yyy --pwd xxxx
 
 
 # Credits
