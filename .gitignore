@@ -5,6 +5,9 @@ __pycache__/
 # C extensions
 *.so
 
+# grunt/bower
+biomajwatcher/webapp/.tmp
+
 # Distribution / packaging
 .Python
 env/
