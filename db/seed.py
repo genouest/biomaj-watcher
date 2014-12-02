@@ -15,6 +15,7 @@ parser = argparse.ArgumentParser(description='Initialize database content.')
 parser.add_argument('--config')
 parser.add_argument('--user')
 parser.add_argument('--pwd')
+parser.add_argument('--email')
 args = parser.parse_args()
 
 if not args.config:
@@ -37,7 +38,10 @@ if args.pwd:
 else:
     pwd = sha1("%s" % randint(1, 1e99)).hexdigest()
 
-rootuser.create(pwd)
+if not args.email:
+  rootuser.create(pwd)
+else:
+  rootuser.create(pwd,args.email)
 
 
 

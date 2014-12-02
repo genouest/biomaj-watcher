@@ -14,7 +14,8 @@ requires = [
     'pyramid_debugtoolbar',
     'waitress',
     'pymongo',
-    'py-bcrypt'
+    'py-bcrypt',
+    'python-ldap'
     ]
 
 setup(name='biomaj-watcher',

@@ -87,7 +87,7 @@ angular.module('biomaj').controller('UserCtrl',
 
 
     User.is_authenticated().$promise.then(function(data) {
-        if(data.user != null) {
+        if(data.user !== null) {
          $scope.user = data.user;
          $scope.user['is_admin'] = data.is_admin;
          $scope.is_logged = true;
@@ -98,19 +98,19 @@ angular.module('biomaj').controller('UserCtrl',
     $scope.logout = function() {
       Logout.get().$promise.then(function(){
         $scope.user = null;
-        $scope.is_logged = false
+        $scope.is_logged = false;
         Auth.setUser(null);
-        $location.path("bank");
+        $location.path('bank');
       });
     };
 
     $scope.search = '';
     $scope.onSearch = function() {
       $log.info('search '+$scope.search);
-      if($scope.search!='') {
+      if($scope.search !== '') {
         $location.path('search').search({q: $scope.search});
       }
-    }
+    };
   });
 
 angular.module('biomaj').controller('LoginCtrl',
@@ -120,12 +120,12 @@ angular.module('biomaj').controller('LoginCtrl',
     $scope.msg = '';
     $scope.auth = function(user_id, password) {
        User.authenticate({'name': user_id},{'password': password}).$promise.then(function(data) {
-           if(data.user != null) {
+           if(data.user !== null) {
             $scope.user = data.user;
             $scope.user['is_admin'] = data.is_admin;
             Auth.setUser($scope.user);
             $rootScope.$broadcast('LoginCtrl.login', $scope.user);
-            $location.path("bank");
+            $location.path('bank');
           }
           else {
             $scope.msg = 'Login error';
@@ -151,13 +151,13 @@ angular.module('biomaj').service('Auth', function() {
 
 angular.module('biomaj').controller('sessionLogCtrl',
     function ($scope, $routeParams, $log, $http) {
-      $scope.session = $routeParams.session
-      $scope.bank = $routeParams.name
-      $http({method: "GET", url: "/bank/"+$routeParams.name+"/log/"+$routeParams.session})
+      $scope.session = $routeParams.session;
+      $scope.bank = $routeParams.name;
+      $http({method: 'GET', url: '/bank/'+$routeParams.name+'/log/'+$routeParams.session})
         .success(function(data){
           $scope.log = data;
         })
-        .error(function(data){
+        .error(function(){
           $scope.log = 'Log file not found';
         });
     });
@@ -174,24 +174,27 @@ angular.module('biomaj').controller('bankCtrl',
 
       $scope.get_keys = function(obj) {
         var keys = [];
-        for(var k in obj) keys.push(k);
+        for(var k in obj) { keys.push(k); }
         return keys;
-      }
+      };
 
       /**
       * Return an array of process name/process status
       */
       $scope.get_proc_status = function(process, proc) {
-        if(process[proc]==undefined) { return []; }
-        if(proc == 'postprocess') {
+        var res = [];
+        var metas = null;
+        var elt = {};
+        var procs = null;
+        if(process[proc] === undefined) { return []; }
+        if(proc === 'postprocess') {
           var blocks = $scope.get_keys(process[proc]);
-          var res = [];
           for(var i = 0;i < blocks.length; i++) {
-              var metas =$scope.get_keys(process[proc][blocks[i]]);
+              metas =$scope.get_keys(process[proc][blocks[i]]);
               for(var j = 0;j < metas.length; j++) {
-                var procs = $scope.get_keys(process[proc][blocks[i]][metas[j]]);
+                procs = $scope.get_keys(process[proc][blocks[i]][metas[j]]);
                 for(var k = 0;k < procs.length; k++) {
-                    var elt = {};
+                    elt = {};
                     elt['name'] = blocks[i]+'.'+metas[j]+'.'+procs[k];
                     elt['status'] = process[proc][blocks[i]][metas[j]][procs[k]];
                     res.push(elt);
@@ -200,14 +203,13 @@ angular.module('biomaj').controller('bankCtrl',
           }
         }
         else {
-            var metas = $scope.get_keys(process[proc]);
-            var res = [];
-                for(var j = 0;j < metas.length; j++) {
-                  var procs = $scope.get_keys(metas[j]);
-                  for(var k = 0;k < procs.length; k++) {
-                    var elt = {};
-                    elt['name'] = metas[j]+'.'+procs[k];
-                    elt['status'] = process[proc][metas[j]][procs[k]];
+                metas = $scope.get_keys(process[proc]);
+                for(var j2 = 0;j2 < metas.length; j2++) {
+                  procs = $scope.get_keys(metas[j2]);
+                  for(var k2 = 0;k2 < procs.length; k2++) {
+                    elt = {};
+                    elt['name'] = metas[j2]+'.'+procs[k2];
+                    elt['status'] = process[proc][metas[j2]][procs[k2]];
                     res.push(elt);
                   }
                 }
@@ -219,7 +221,7 @@ angular.module('biomaj').controller('bankCtrl',
 
       $scope.get_status = function() {
         BankStatus.get({'name': $routeParams.name}).$promise.then(function(data) {
-          if(data!=null) {
+          if(data !== null) {
             var keys = [];
             for(var k in data) {
               //this.substring( 0, str.length ) === str
@@ -227,9 +229,9 @@ angular.module('biomaj').controller('bankCtrl',
                 keys.push(k);
               }
             }
-            if(keys.length>0) {
+            if(keys.length > 0) {
               $scope.status = data;
-              $scope.keys = keys
+              $scope.keys = keys;
             }
           }
         });
@@ -246,7 +248,7 @@ angular.module('biomaj').controller('bankCtrl',
             $scope.bank = data;
             var last_update = data['last_update_session'];
             for(var i=data['sessions'].length-1;i>=0;i--) {
-              if(data['sessions'][i]['id'] == last_update) {
+              if(data['sessions'][i]['id'] === last_update) {
                 $scope.last_update_session = data['sessions'][i];
                 break;
               }
@@ -263,10 +265,10 @@ angular.module('biomaj').controller('bankReleaseCtrl',
       $scope.release = $routeParams.release;
       Bank.get({'name': $routeParams.name}).$promise.then(function(data) {
         for(var i=0;i<data['production'].length;i++) {
-          if(data['production'][i]['release'] == $routeParams.release || data['production'][i]['release'] == $scope.name+'-'+$routeParams.release) {
+          if(data['production'][i]['release'] === $routeParams.release || data['production'][i]['release'] === $scope.name+'-'+$routeParams.release) {
             $scope.production = data['production'][i];
             for(var j=0;j<data['sessions'].length;j++){
-              if(data['sessions'][j]['release'] == $routeParams.release && data['sessions'][j]['action'] == 'update') {
+              if(data['sessions'][j]['release'] === $routeParams.release && data['sessions'][j]['action'] === 'update') {
                 $scope.session = data['sessions'][j];
                 break;
               }
@@ -304,7 +306,7 @@ angular.module('biomaj').controller('banksCtrl',
 
 angular.module('biomaj').controller('searchCtrl',
     function ($scope, $log, $location, Search, ReorderSearchResults) {
-      var query = $location.search().q
+      var query = $location.search().q;
       $scope.query = query;
       Search.list({q: query}).$promise.then(function(res) {
         var banks = ReorderSearchResults.reorder(res);
@@ -315,44 +317,44 @@ angular.module('biomaj').controller('searchCtrl',
 angular.module('biomaj').controller('statsCtrl',
     function ($scope, $log, Stat) {
       $scope.config = {
-          "labels": false,
-          "title": "Banks disk usage",
-          "legend": {
-            "display": true,
-            "position": "right"
+          'labels': false,
+          'title': 'Banks disk usage',
+          'legend': {
+            'display': true,
+            'position': 'right'
           },
-          "mouseover": function(d) {
-            $scope.bank_size = d.data.x+": "+$scope.get_size(d.data.y[0]);
+          'mouseover': function(d) {
+            $scope.bank_size = d.data.x+': '+$scope.get_size(d.data.y[0]);
           },
-          "click" : function(d) {
+          'click' : function(d) {
             var bank = d.data.x;
             $scope.releaseconfig = {
-                "labels": false,
-                "title": bank+" disk usage",
-                "legend": {
-                  "display": true,
-                  "position": "right"
+                'labels': false,
+                'title': bank+' disk usage',
+                'legend': {
+                  'display': true,
+                  'position': 'right'
                 },
-                "mouseover": function(d) {
-                  $scope.release_size = d.data.x+": "+$scope.get_size(d.data.y[0]);
+                'mouseover': function(d) {
+                  $scope.release_size = d.data.x+': '+$scope.get_size(d.data.y[0]);
                 },
-                "click" : function(d) {
-                  var bank = d.data.x;
+                'click' : function() {
+                  //var bank = d.data.x;
                 },
-                "innerRadius": 0,
-                "lineLegend": "lineEnd"
+                'innerRadius': 0,
+                'lineLegend': 'lineEnd'
               };
               var series = [bank];
               var data= [];
               var selected_bank = null;
               var stats = $scope.stats;
               for(var i=0;i<stats.length;i++) {
-                if(stats[i]['name']==bank) {
+                if(stats[i]['name'] === bank) {
                   selected_bank = stats[i];
                   break;
                 }
               }
-              if(selected_bank!=null) {
+              if(selected_bank !== null) {
 
                 for(var j=0;j<selected_bank['releases'].length;j++) {
                   var elt = {'x': selected_bank['releases'][j]['name'], 'y': [selected_bank['releases'][j]['size']]};
@@ -361,8 +363,8 @@ angular.module('biomaj').controller('statsCtrl',
                 $scope.release = {'series': series, 'data': data};
               }
           },
-          "innerRadius": 0,
-          "lineLegend": "lineEnd"
+          'innerRadius': 0,
+          'lineLegend': 'lineEnd'
         };
         $scope.chartType = 'pie';
 

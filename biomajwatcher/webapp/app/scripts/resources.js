@@ -1,4 +1,4 @@
-/*jslint browser: true, indent: 4, vars: true, nomen: true */
+/*jslint sub:true, browser: true, indent: 4, vars: true, nomen: true */
 
 (function () {
   'use strict';
@@ -9,13 +9,13 @@
   function ReorderSearchResults(){
     return {
             reorder: function(res) {
-                  var banks = []
+                  var banks = [];
                   for(var i=0;i<res.length;i++){
                     var id = res[i]['_source']['bank'];
                     var bank = {};
                     var new_bank = true;
                     for(var b=0;b<banks.length;b++){
-                      if(banks[b]['name'] == id) {
+                      if(banks[b]['name'] === id) {
                         bank = banks[b];
                         new_bank = false;
                         break;
@@ -30,7 +30,7 @@
                     var release = res[i]['_source']['release'];
                     var rel = [];
                     for(var r=0;r<bank['release'];r++) {
-                      if(bank['release'][r]['name'] == release) {
+                      if(bank['release'][r]['name'] === release) {
                         rel = bank['release'][r]['elts'];
                         new_release = false;
                         break;
@@ -50,8 +50,8 @@
                   }
                   return banks;
                 }
-    }
-  };
+    };
+  }
 
   function Stat($resource) {
       return $resource('/stat', {}, {
@@ -61,7 +61,7 @@
             cache: true
           }
       });
-  };
+  }
 
     function Search($resource) {
         return $resource('/search', {}, {
@@ -71,11 +71,11 @@
               cache: true
             }
         });
-    };
+    }
 
     function BankStatus($resource) {
       return $resource('/bank/:name/status');
-    };
+    }
 
     function Bank($resource) {
         return $resource('/bank', {}, {
@@ -91,14 +91,14 @@
               cache: false
             }
         });
-    };
+    }
 
     function Logout($resource) {
       return $resource('/logout');
     }
 
     function User($resource) {
-        var user = null;
+        //var user = null;
         return $resource('/auth', {}, {
             list: {
               url: '/user',
@@ -131,7 +131,7 @@
               cache: false
             }
         });
-    };
+    }
 
 
   angular.module('biomaj.resources', ['ngResource'])
