@@ -1,6 +1,6 @@
 from pyramid.view import view_config
 from pyramid.httpexceptions import HTTPFound, HTTPNotFound, HTTPForbidden
-from pyramid.security import authenticated_userid, remember, forget
+from pyramid.security import remember, forget
 from pyramid.renderers import render_to_response
 from pyramid.response import Response, FileResponse
 
@@ -114,7 +114,7 @@ def can_read_bank(request, bank):
   '''
   if bank['properties']['visibility'] == 'public':
     return True
-  user_id = authenticated_userid(request)
+  user_id = request.authenticated_userid
   if user_id is None:
     return False
   settings = request.registry.settings
@@ -124,7 +124,7 @@ def can_read_bank(request, bank):
 
 
 def is_authenticated(request):
-  user_id = authenticated_userid(request)
+  user_id = request.authenticated_userid
   if user_id:
     return BmajUser(user_id).user
   else:

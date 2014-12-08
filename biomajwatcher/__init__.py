@@ -1,6 +1,6 @@
 from pyramid.config import Configurator
 from pyramid.renderers import JSON
-from pyramid.security import authenticated_userid
+#from pyramid.security import authenticated_userid
 from pyramid.events import BeforeRender
 from pyramid.authentication import AuthTktAuthenticationPolicy
 from pyramid.authorization import ACLAuthorizationPolicy
@@ -85,4 +85,4 @@ def main(global_config, **settings):
     return config.make_wsgi_app()
 
 def before_render(event):
-    event["username"] = authenticated_userid(event['request'])
+    event["username"] = event['request'].authenticated_userid
