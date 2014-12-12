@@ -4,7 +4,8 @@
   <div class="panel panel-default">
     <div class="panel-heading">Properties</div>
     <div class="panel-body">
-      <div>Release: {{production.remoterelease}}</div>
+      <div>Release: {{production.release}}</div>
+      <div>Remote release: {{production.remoterelease}}</div>
       <div class="row">
         <div class="col-sm-6 col-md-4">Formats:<ul ng-repeat="f in production.formats"><li>{{f}}</li></ul></div>
         <div class="col-sm-6 col-md-4"><button type="button" class="btn btn-primary btn-tiny" data-toggle="modal" data-target="#formats">
