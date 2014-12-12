@@ -15,7 +15,9 @@ requires = [
     'waitress',
     'pymongo',
     'py-bcrypt',
-    'python-ldap'
+    'python-ldap',
+    'gunicorn',
+    'gevent'
     ]
 
 setup(name='biomaj-watcher',

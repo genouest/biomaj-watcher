@@ -8,7 +8,7 @@
     <th>Name</th><th>Type</th><th>Formats</th><th>Current Release</th>
   </thead>
   <tbody ng-repeat="b in banks">
-    <tr><td><a href="#/bank/{{b.name}}">{{b.name}}</a></td><td>{{b.properties.type.join(',')}}</td><td>{{b.formats}}</td><td>{{b.release}}</td></tr>
+    <tr><td><a href="#/bank/{{b.name}}">{{b.name}}</a></td><td>{{b.properties.type.join(',')}}</td><td>{{b.formats}}</td><td>{{b.remoterelease}}</td></tr>
   </tbody>
 </table>
 
