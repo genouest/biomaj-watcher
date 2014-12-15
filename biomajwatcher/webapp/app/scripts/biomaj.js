@@ -219,6 +219,7 @@ angular.module('biomaj').controller('bankCtrl',
 
       $scope.updateworkflow = ['init', 'check', 'depends', 'preprocess', 'release','download', 'postprocess', 'publish', 'over'];
 
+      $scope.locked = false;
       $scope.get_status = function() {
         BankStatus.get({'name': $routeParams.name}).$promise.then(function(data) {
           if(data !== null) {
@@ -233,6 +234,15 @@ angular.module('biomaj').controller('bankCtrl',
               $scope.status = data;
               $scope.keys = keys;
             }
+          }
+        });
+
+        Bank.locked({'name': $routeParams.name}).$promise.then(function(data) {
+          if(data.status == 1) {
+            $scope.locked = true;
+          }
+          else {
+            $scope.locked = false;
           }
         });
       } ;
@@ -256,7 +266,20 @@ angular.module('biomaj').controller('bankCtrl',
           });
       };
       $scope.load_bank();
-    });
+
+      $scope.remove = function(release) {
+        Bank.delete({'name': $routeParams.name, 'release': release}).$promise.then(function(data) {
+          $log.info(data.msg);
+        });
+      };
+
+      $scope.update = function() {
+        Bank.update({'name': $routeParams.name},{}).$promise.then(function(data) {
+          $log.info(data.msg);
+        });
+      };
+
+  });
 
 angular.module('biomaj').controller('bankReleaseCtrl',
     function ($scope, $routeParams, $log, Bank) {

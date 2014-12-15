@@ -89,7 +89,26 @@
               method: 'GET',
               isArray: false,
               cache: false
+            },
+            locked: {
+              url: '/bank/:name/locked',
+              method: 'GET',
+              isArray: false,
+              cache: false
+            },
+            delete: {
+              url: '/bank/:name/:release',
+              method: 'DELETE',
+              isArray: false,
+              cache: false
+            },
+            update: {
+              url: '/bank/:name',
+              method: 'PUT',
+              isArray: false,
+              cache: false
             }
+
         });
     }
 

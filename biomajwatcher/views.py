@@ -11,9 +11,12 @@ from bson.objectid import ObjectId
 from bson.errors import InvalidId
 import bcrypt
 
+
 from biomaj.bank import Bank
 from biomaj.config import BiomajConfig
 from biomaj.user import BmajUser
+
+import background
 
 def load_config(request):
   if BiomajConfig.global_config is None:
@@ -142,6 +145,17 @@ def check_user_pw(username, password):
     else:
         return None
 
+@view_config(route_name='banklocked', renderer='json', request_method='GET')
+def bank_locked(request):
+  bank = Bank(request.matchdict['id'], no_log=True)
+  if not can_read_bank(request, bank.bank):
+    return HTTPForbidden('Not authorized to access this resource')
+
+  if bank.is_locked():
+    return {'status': 1}
+  else:
+    return {'status': 0}
+
 @view_config(route_name='bankstatus', renderer='json', request_method='GET')
 def bank_status(request):
   bank = Bank(request.matchdict['id'], no_log=True)
@@ -187,6 +201,16 @@ def logout(request):
   headers = forget(request)
   request.response.headerlist.extend(headers)
   return { 'user': None, 'is_admin': False }
+
+@view_config(route_name='bankreleaseremove', renderer='json', request_method='DELETE')
+def bank_release_remove(request):
+  print 'NOT YET IMPLEMENTED MUST UPDATE BANK'
+  return {'msg': 'NOT YET IMPLEMENTED MUST UPDATE BANK'}
+
+@view_config(route_name='bankdetails', renderer='json', request_method='PUT')
+def bank_update(request):
+  print 'NOT YET IMPLEMENTED MUST UPDATE BANK'
+  return {'msg': 'NOT YET IMPLEMENTED MUST UPDATE BANK'}
 
 @view_config(route_name='bankdetails', renderer='json', request_method='GET')
 def bank_details(request):

@@ -7,9 +7,14 @@
       <div class="panel-body">
         <div>Owner: {{ bank.properties.owner}}</div>
         <div>Type: {{ bank.properties.type.join(',')}}</div>
+        <div ng-if="user.is_admin && locked" class="label label-warning">
+          <span>Bank action in progres</span>
+        </div>
       </div>
     </div>
-
+    <div class="row" ng-if="user.is_admin">
+      <button ng-click="update()" class="btn btn-primary btn-lg">Update</button>
+    </div>
   </div>
   <div class="col-sm-12 col-md-6">
 
@@ -18,6 +23,7 @@
       <div class="panel-body">
         <div ng-repeat="p in bank.production">
           <div>Release: {{p.release}} <a ng-href="#/bank/{{name}}/{{p.release}}"><span class="glyphicon glyphicon-eye-open"> </span></a></div>
+          <button ng-click="remove(p.release)" class="btn btn-primary btn-sm" ng-if="user.is_admin">Remove <span class="glyphicon glyphicon-trash"> </span></button>
           <div>Remote release: {{p.remoterelease}}</div>
           <div>Formats: <ul ng-repeat="f in p.formats"><li>{{f}}</li></ul></div>
           <div>Types: <ul ng-repeat="f in p.types"><li>{{f}}</li></ul></div>

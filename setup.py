@@ -17,7 +17,10 @@ requires = [
     'py-bcrypt',
     'python-ldap',
     'gunicorn',
-    'gevent'
+    'gevent',
+    'Celery==3.0.23',
+    'celery-with-mongodb',
+    'pyramid_celery'
     ]
 
 setup(name='biomaj-watcher',
