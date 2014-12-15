@@ -12,8 +12,14 @@
         </div>
       </div>
     </div>
-    <div class="row" ng-if="user.is_admin">
-      <button ng-click="update()" class="btn btn-primary btn-lg">Update</button>
+    <div  ng-if="user.is_admin">
+      <div class="panel panel-default">
+        <div class="panel-heading">Actions</div>
+          <div class="panel-body">
+            <button ng-click="update()" class="btn btn-primary btn-lg">Update</button>
+            <button ng-click="update_from_scratch()" class="btn btn-primary btn-lg">Update from scratch</button>
+          </div>
+        </div>
     </div>
   </div>
   <div class="col-sm-12 col-md-6">

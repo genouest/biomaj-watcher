@@ -204,13 +204,23 @@ def logout(request):
 
 @view_config(route_name='bankreleaseremove', renderer='json', request_method='DELETE')
 def bank_release_remove(request):
-  print 'NOT YET IMPLEMENTED MUST UPDATE BANK'
-  return {'msg': 'NOT YET IMPLEMENTED MUST UPDATE BANK'}
+  background.remove.delay(request.matchdict['id'], request.matchdict['release'])
+  return {'msg': 'Remove operation in progress'}
 
 @view_config(route_name='bankdetails', renderer='json', request_method='PUT')
 def bank_update(request):
-  print 'NOT YET IMPLEMENTED MUST UPDATE BANK'
-  return {'msg': 'NOT YET IMPLEMENTED MUST UPDATE BANK'}
+  options = {}
+  try:
+    fromscratch = json.loads(request.body)
+    fromscratch = fromscratch['fromscratch']
+    if int(fromscratch) == 1:
+      options['fromscratch'] = True
+    else:
+      options['fromscratch'] = False
+  except:
+    options['fromscratch'] = False
+  background.update.delay(request.matchdict['id'],options=options)
+  return {'msg': 'Update operation in progress'}
 
 @view_config(route_name='bankdetails', renderer='json', request_method='GET')
 def bank_details(request):

@@ -6,7 +6,7 @@ License: AGPL
 
 in development with biomaj
 
-# Development - build web app
+## Development - build web app
 
 in biomajwatcher/webapp:
 
@@ -16,7 +16,7 @@ in biomajwatcher/webapp:
     bower install
     grunt
 
-# Running
+## Running
 
 Dev: pserve development.ini
 
@@ -24,6 +24,13 @@ Prod: to be documented, should use gunicorn
 
  gunicorn -p /var/run/gunicorn_bmaj.pid --log-config=production.ini --paste production.ini &
 
+## Background processing
+
+To allow banks update/removal, Celery is needed.
+
+pceleryd development.ini/production.ini
+
+One can use flower to monitor celery.
 
 ## Admin user creation
 

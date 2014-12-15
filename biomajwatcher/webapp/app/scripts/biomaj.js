@@ -269,13 +269,21 @@ angular.module('biomaj').controller('bankCtrl',
 
       $scope.remove = function(release) {
         Bank.delete({'name': $routeParams.name, 'release': release}).$promise.then(function(data) {
-          $log.info(data.msg);
+          alert(data.msg);
         });
       };
 
       $scope.update = function() {
+        $scope.status = null;
         Bank.update({'name': $routeParams.name},{}).$promise.then(function(data) {
-          $log.info(data.msg);
+          alert(data.msg);
+        });
+      };
+
+      $scope.update_from_scratch = function() {
+        $scope.status = null;
+        Bank.update({'name': $routeParams.name},{fromscratch: 1}).$promise.then(function(data) {
+          alert(data.msg);
         });
       };
 
