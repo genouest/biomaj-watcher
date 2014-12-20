@@ -26,7 +26,8 @@ Prod: to be documented, should use gunicorn
 
 ## Background processing
 
-To allow banks update/removal, Celery is needed.
+To allow banks update/removal, Celery is needed. Celery can run on same node, or
+multiple distant ones to execute bank updates.
 
 pceleryd development.ini/production.ini
 
