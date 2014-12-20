@@ -1,14 +1,14 @@
 <div class="row">
 <h1>Available banks</h1>
 </div>
-<div class="row">
+<div class="row datatable">
 
-<table class="table table-striped table-bordered blist">
+<table datatable="ng" class="table table-striped table-bordered blist">
   <thead>
     <th>Name</th><th>Type</th><th>Formats</th><th>Current Release</th>
   </thead>
-  <tbody ng-repeat="b in banks">
-    <tr><td><a href="#/bank/{{b.name}}">{{b.name}}</a></td><td>{{b.properties.type.join(',')}}</td><td>{{b.formats}}</td><td>{{b.remoterelease}}</td></tr>
+  <tbody>
+    <tr ng-repeat="b in banks"><td><a href="#/bank/{{b.name}}">{{b.name}}</a></td><td>{{b.properties.type.join(',')}}</td><td>{{b.formats}}</td><td>{{b.remoterelease}}</td></tr>
   </tbody>
 </table>
 

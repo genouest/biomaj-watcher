@@ -3,7 +3,7 @@
 'use strict';
 
 // Declare app level module which depends on filters, and services
-angular.module('biomaj', ['biomaj.resources', 'ngSanitize', 'ngCookies', 'ngRoute', 'ui.utils', 'ui.bootstrap','ui.codemirror', 'ngGrid', 'angularCharts']).
+angular.module('biomaj', ['biomaj.resources', 'ngSanitize', 'ngCookies', 'ngRoute', 'ui.utils', 'ui.bootstrap','ui.codemirror', 'ngGrid', 'angularCharts', 'datatables']).
 
 config(['$routeProvider','$logProvider',
     function ($routeProvider) {

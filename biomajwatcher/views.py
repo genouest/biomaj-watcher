@@ -18,6 +18,7 @@ from biomaj.user import BmajUser
 
 import background
 
+
 def load_config(request):
   if BiomajConfig.global_config is None:
     settings = request.registry.settings
