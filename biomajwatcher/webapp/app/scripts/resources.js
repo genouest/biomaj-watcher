@@ -53,15 +53,15 @@
     };
   }
 
-  function Stat($resource) {
-      return $resource('/stat', {}, {
-          list: {
-            method: 'GET',
-            isArray: true,
-            cache: true
-          }
-      });
-  }
+    function Stat($resource) {
+        return $resource('/stat', {}, {
+            list: {
+              method: 'GET',
+              isArray: true,
+              cache: true
+            }
+        });
+    }
 
     function Search($resource) {
         return $resource('/search', {}, {
