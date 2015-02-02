@@ -72,6 +72,11 @@ angular.module('biomaj').controller('scheduleCtrl',
     function ($scope, $rootScope, $routeParams, $log, $location, Bank, User, Auth, Schedule) {
       $scope.cron = [];
       Bank.list().$promise.then(function(banks) {
+        var banknames = [];
+        for(var b=0;b<banks.length;b++){
+          banknames.push(banks[b].name);
+          $scope.names = banknames;
+        }
         $scope.banks = banks;
       });
       if(Auth.isConnected()) {
@@ -86,6 +91,9 @@ angular.module('biomaj').controller('scheduleCtrl',
       $scope.newcron = function() {
         $scope.cron.push({ 'comment': 'new', 'slices': '* * 1 * *', 'banks': []});
       }
+      $scope.addToCron = function(c) {
+        c.banks.push(c.add);
+      };
       Schedule.list().$promise.then(function(data){
         for(var i=0;i<data.length;i++){
           data['save'] = False;
