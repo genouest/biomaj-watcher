@@ -10,6 +10,9 @@ AGPL
 
 biomaj3
 
+Javascript dependencies are downloaded help with bower (see next).
+Dependencies are listed in biomajwatcher/webapp/bower.json.
+
 # Build web app
 
 Install npm (apt-get install npm/ yum install npm)
