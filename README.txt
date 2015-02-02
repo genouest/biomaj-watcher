@@ -1,26 +1,20 @@
-biomaj-watcher
-=============
+# biomaj-watcher
 
 Web interface for biomaj (https://github.com/osallou/biomaj) 
 
-License
-=======
+# License
 
 AGPL
 
-Requirements
-============
+# Requirements
 
 biomaj3
 
-Install
-=======
+# Install
 
     python setup.py install
 
-
-Development - build web app
-===========================
+# Development - build web app
 
 Install npm
 
@@ -34,8 +28,7 @@ in biomajwatcher/webapp:
     bower install
     grunt
 
-Configuration
-=============
+# Configuration
 
 Configuration is done in development.ini or production.ini
 
@@ -50,8 +43,7 @@ Configuration is done in development.ini or production.ini
     BROKER_URL = mongodb://localhost/biomaj_celery
 
 
-Running
-=======
+# Running
 
 ## Development
 
@@ -66,8 +58,7 @@ Web server will start to listen on port 6543 by default. Update ini files to
 customize web configuration.
 
 
-Background processing (Optional)
-================================
+# Background processing (Optional)
 
 To allow banks update/removal by authenticated user, Celery is needed. Celery can run on same node, or multiple distant ones to execute bank updates.
 
@@ -75,13 +66,11 @@ To allow banks update/removal by authenticated user, Celery is needed. Celery ca
 
 One can use flower to monitor celery.
 
-User creation
-===================
+# User creation
 
 python db/seed.py --config production.ini --user yyy --pwd xxxx
 
 
-Credits
-=======
+# Credits
 
 Signin image from http://bootsnipp.com/snippets/featured/google-style-login
