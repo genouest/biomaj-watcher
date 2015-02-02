@@ -10,23 +10,14 @@ AGPL
 
 biomaj3
 
-# Install
+# Build web app
 
-    python setup.py install
+Install npm (apt-get install npm/ yum install npm)
 
-# Development - build web app
+in biomajwatcher/webapp
 
-Install npm
-
-    git checkout -b develop
-
-in biomajwatcher/webapp:
-
-    npm install -g grunt
     npm install -g bower
-    grunt install
     bower install
-    grunt
 
 # Configuration
 
