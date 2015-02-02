@@ -25,7 +25,7 @@ requires = [
     ]
 
 setup(name='biomaj-watcher',
-      version='0.1',
+      version='3.0.1',
       description='biomaj-watcher',
       long_description=README + '\n\n' + CHANGES,
       classifiers=[

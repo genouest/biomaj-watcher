@@ -1,5 +1,9 @@
 body { padding-top: 70px; }
 
+.bankdg {
+  margin: 5px;
+}
+
 .bankchart {
   height: 300px;
 }

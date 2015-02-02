@@ -65,27 +65,19 @@ angular.module('biomaj').controller('biomajCtrl',
     });
 
 angular.module('biomaj').controller('scheduleCtrl',
-    function ($scope, $rootScope, $routeParams, $log, $location, User, Auth, Schedule) {
+    function ($scope, $rootScope, $routeParams, $log, $location, Bank, User, Auth, Schedule) {
+      Bank.list().$promise.then(function(banks) {
+        $scope.banks = banks;
+      });
+      if(Auth.isConnected()) {
+        $scope.user = Auth.getUser();
+      }
+      else {
+        $scope.user = null;
+      }
+
       Schedule.list().$promise.then(function(data){
-        var cron_list = {};
-        for(var c=0;c<data.length;c++) {
-            var job  = data[c];
-            if(cron_list[job['comment']] === undefined) {
-              cron_list[job['comment']] = { 'time': job['slices'], 'banks': []};
-            }
-            var bank = job['command'].split('--bank')[1].trim()
-            cron_list[job['comment']]['banks'].push(bank);
-        }
-        var cron = []
-        for (var p in cron_list) {
-          if( cron_list.hasOwnProperty(p) ) {
-            cron_list[p]['comment'] = p;
-            cron.push(cron_list[p]);
-
-          }
-        }
-        $scope.cron = cron;
-
+        $scope.cron = data;
       });
 
     });

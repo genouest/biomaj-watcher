@@ -1,9 +1,18 @@
-<div ng-repeat="c in cron">
-<div class="panel panel-default">
-  <div class="panel-heading">{{c.comment}}</div>
-    <div class="panel-body">
-      <div>{{c.time}}</div>
-      <div>{{c.banks}}</div>
+<div class="row">
+  <div class="col-sm-12 col-md-6">
+    <div ng-repeat="b in banks | orderBy : 'name'">
+      <div class="bankdg"><h3><span class="label label-default">{{b.name}}</span></h3></div>
+    </div>
+  </div>
+  <div class="col-sm-12 col-md-6">
+    <div ng-repeat="c in cron">
+      <div class="panel panel-default">
+        <div class="panel-heading">{{c.comment}}</div>
+        <div class="panel-body">
+          <div>{{c.slices}}</div>
+          <div>{{c.banks}}</div>
+        </div>
+      </div>
     </div>
   </div>
 </div>

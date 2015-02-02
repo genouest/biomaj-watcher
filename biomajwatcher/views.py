@@ -81,8 +81,9 @@ def getschedule(request):
   settings = request.registry.settings
   biomaj_cli = settings['biomaj_cli']
   for job in user_cron:
-    #if job.command.startswith(biomaj_cli):
-    jobs.append({'comment': job.comment, 'slices': str(job.slices), 'command': job.command})
+    if job.command.startswith(biomaj_cli):
+      banks = job.command.split('--bank')[1].strip().split(',')
+      jobs.append({'comment': job.comment, 'slices': str(job.slices), 'banks': banks})
   return jobs
 
 @view_config(route_name='updateschedulebank', renderer='json', request_method='DELETE')
@@ -104,15 +105,15 @@ def setschedule(request):
   settings = request.registry.settings
   global_properties = settings['global_properties']
   biomaj_cli = settings['biomaj_cli']
-  banks = cron_banks.split(',')
-  for bank in banks:
-    cmd = biomaj_cli+" --config "+global_properties+" --update --bank "+bank
-    job = cron.new(command=cmd, comment=cron_name)
-    job.setall(cron_time)
+
+  cmd = biomaj_cli+" --config "+global_properties+" --update --bank "+bank
+  job = cron.new(command=cmd, comment=cron_name)
+  job.setall(cron_time)
   cron.write()
   for job in cron:
     if job.command.startswith(biomaj_cli):
-      jobs.append(job)
+      banks = job.command.split('--bank')[1].strip().split(',')
+      jobs.append({'comment': job.comment, 'slices': str(job.slices), 'banks': banks})
   return jobs
 
 
