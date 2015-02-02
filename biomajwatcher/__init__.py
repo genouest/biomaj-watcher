@@ -60,6 +60,9 @@ def main(global_config, **settings):
     config.add_route('bankreleaseremove', '/bank/{id}/{release}')
     config.add_route('sessionlog', '/bank/{id}/log/{session}')
 
+    config.add_route('schedulebank','/schedule')
+    config.add_route('updateschedulebank','/schedule/{name}')
+
     config.add_route('search', '/search')
 
     config.add_route('search_format', '/search/format/{format}')
@@ -73,6 +76,7 @@ def main(global_config, **settings):
     config.add_route('logout', '/logout')
 
     config.scan()
+
 
     # automatically serialize bson ObjectId and datetime to Mongo extended JSON
     json_renderer = JSON()

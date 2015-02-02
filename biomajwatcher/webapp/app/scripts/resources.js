@@ -73,6 +73,28 @@
         });
     }
 
+    function Schedule($resource) {
+        return $resource('/schedule', {}, {
+            list: {
+              method: 'GET',
+              isArray: true,
+              cache: false
+            },
+            update: {
+              url: '/schedule/:name',
+              method: 'POST',
+              isArray: true,
+              cache: false
+            },
+            remove: {
+              url: '/schedule/:name',
+              method: 'DELETE',
+              isArray: true,
+              cache: false
+            }
+        });
+    }
+
     function BankStatus($resource) {
       return $resource('/bank/:name/status');
     }
@@ -160,6 +182,7 @@
     .factory('Bank', Bank)
     .factory('BankStatus', BankStatus)
     .factory('User', User)
+    .factory('Schedule', Schedule)
     .factory('Logout', Logout);
 
 }());

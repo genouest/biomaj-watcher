@@ -11,6 +11,7 @@ from bson.objectid import ObjectId
 from bson.errors import InvalidId
 import bcrypt
 
+from crontab import CronTab
 
 from biomaj.bank import Bank
 from biomaj.config import BiomajConfig
@@ -72,6 +73,48 @@ def get_files_matching_request(banks, selectedformat=None, selectedtype=None):
       prod['bank'] = bank['name']
       res.append(prod)
   return res
+
+@view_config(route_name='schedulebank', renderer='json', request_method='GET')
+def getschedule(request):
+  jobs = []
+  user_cron  = CronTab(user=True)
+  settings = request.registry.settings
+  biomaj_cli = settings['biomaj_cli']
+  for job in user_cron:
+    #if job.command.startswith(biomaj_cli):
+    jobs.append({'comment': job.comment, 'slices': str(job.slices), 'command': job.command})
+  return jobs
+
+@view_config(route_name='updateschedulebank', renderer='json', request_method='DELETE')
+def unsetschedule(request):
+  cron_name = request.matchdict['name']
+  cron  = CronTab(user=True)
+  cron.remove_all(comment=cron_name)
+  cron.write()
+  return []
+
+@view_config(route_name='updateschedulebank', renderer='json', request_method='POST')
+def setschedule(request):
+  jobs = []
+  cron_time = request.matchdict['time']
+  cron_banks = request.matchdict['banks']
+  cron_name = request.matchdict['name']
+  cron  = CronTab(user=True)
+  cron.remove_all(comment=cron_name)
+  settings = request.registry.settings
+  global_properties = settings['global_properties']
+  biomaj_cli = settings['biomaj_cli']
+  banks = cron_banks.split(',')
+  for bank in banks:
+    cmd = biomaj_cli+" --config "+global_properties+" --update --bank "+bank
+    job = cron.new(command=cmd, comment=cron_name)
+    job.setall(cron_time)
+  cron.write()
+  for job in cron:
+    if job.command.startswith(biomaj_cli):
+      jobs.append(job)
+  return jobs
+
 
 @view_config(route_name='search_format_type', renderer='json', request_method='GET')
 def search_format_type(request):

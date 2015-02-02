@@ -20,7 +20,8 @@ requires = [
     'gevent',
     'Celery==3.0.23',
     'celery-with-mongodb',
-    'pyramid_celery'
+    'pyramid_celery',
+    'python-crontab'
     ]
 
 setup(name='biomaj-watcher',

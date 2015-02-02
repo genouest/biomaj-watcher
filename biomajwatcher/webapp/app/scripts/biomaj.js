@@ -19,6 +19,10 @@ config(['$routeProvider','$logProvider',
             templateUrl: 'views/search.html',
             controller: 'searchCtrl'
         });
+        $routeProvider.when('/schedule', {
+            templateUrl: 'views/schedule.html',
+            controller: 'scheduleCtrl'
+        });
         $routeProvider.when('/user', {
             templateUrl: 'views/users.html',
             controller: 'userMngtCtrl'
@@ -51,12 +55,39 @@ config(['$routeProvider','$logProvider',
 angular.module('biomaj').controller('WelcomeCtrl',
     function () {});
 
+
 angular.module('biomaj').controller('biomajCtrl',
     function ($rootScope) {
         $rootScope.alerts = [];
         $rootScope.closeAlert = function (index) {
             $rootScope.alerts.splice(index, 1);
         };
+    });
+
+angular.module('biomaj').controller('scheduleCtrl',
+    function ($scope, $rootScope, $routeParams, $log, $location, User, Auth, Schedule) {
+      Schedule.list().$promise.then(function(data){
+        var cron_list = {};
+        for(var c=0;c<data.length;c++) {
+            var job  = data[c];
+            if(cron_list[job['comment']] === undefined) {
+              cron_list[job['comment']] = { 'time': job['slices'], 'banks': []};
+            }
+            var bank = job['command'].split('--bank')[1].trim()
+            cron_list[job['comment']]['banks'].push(bank);
+        }
+        var cron = []
+        for (var p in cron_list) {
+          if( cron_list.hasOwnProperty(p) ) {
+            cron_list[p]['comment'] = p;
+            cron.push(cron_list[p]);
+
+          }
+        }
+        $scope.cron = cron;
+
+      });
+
     });
 
 angular.module('biomaj').controller('userMngtCtrl',
