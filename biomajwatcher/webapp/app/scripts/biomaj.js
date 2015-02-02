@@ -3,7 +3,7 @@
 'use strict';
 
 // Declare app level module which depends on filters, and services
-angular.module('biomaj', ['biomaj.resources', 'ngSanitize', 'ngCookies', 'ngRoute', 'ui.utils', 'ui.bootstrap','ui.codemirror', 'ngGrid', 'angularCharts', 'datatables']).
+var app = angular.module('biomaj', ['biomaj.resources', 'ngSanitize', 'ngCookies', 'ngRoute', 'ui.utils', 'ui.bootstrap','ui.codemirror', 'ngGrid', 'angularCharts', 'datatables', 'xeditable']).
 
 config(['$routeProvider','$logProvider',
     function ($routeProvider) {
@@ -52,6 +52,10 @@ config(['$routeProvider','$logProvider',
         });
 }]);
 
+app.run(function(editableOptions) {
+  editableOptions.theme = 'bs3'; // bootstrap3 theme. Can be also 'bs2', 'default'
+});
+
 angular.module('biomaj').controller('WelcomeCtrl',
     function () {});
 
@@ -66,6 +70,7 @@ angular.module('biomaj').controller('biomajCtrl',
 
 angular.module('biomaj').controller('scheduleCtrl',
     function ($scope, $rootScope, $routeParams, $log, $location, Bank, User, Auth, Schedule) {
+      $scope.cron = [];
       Bank.list().$promise.then(function(banks) {
         $scope.banks = banks;
       });
@@ -75,8 +80,16 @@ angular.module('biomaj').controller('scheduleCtrl',
       else {
         $scope.user = null;
       }
-
+      $scope.save = function(cron) {
+        console.log('Not yet implemented');
+      };
+      $scope.newcron = function() {
+        $scope.cron.push({ 'comment': 'new', 'slices': '* * 1 * *', 'banks': []});
+      }
       Schedule.list().$promise.then(function(data){
+        for(var i=0;i<data.length;i++){
+          data['save'] = False;
+        }
         $scope.cron = data;
       });
 
