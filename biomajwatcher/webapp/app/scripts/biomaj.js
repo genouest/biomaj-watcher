@@ -77,7 +77,7 @@ angular.module('biomaj').controller('scheduleCtrl',
           banknames.push(banks[b].name);
           $scope.names = banknames;
         }
-        $scope.banks = banks;
+        //$scope.banks = banks;
       });
       if(Auth.isConnected()) {
         $scope.user = Auth.getUser();
@@ -85,18 +85,54 @@ angular.module('biomaj').controller('scheduleCtrl',
       else {
         $scope.user = null;
       }
-      $scope.save = function(cron) {
-        console.log('Not yet implemented');
+      $scope.save = function(c) {
+        if(c.slices.split(" ").length !=5) {
+          $scope.msg = 'Wrong schedule cron syntax';
+          return;
+        }
+        if(c.banks.length == 0){
+          $scope.msg = 'Task must contain at least one bank';
+          return;
+        }
+        Schedule.update({'name': c['oldcomment']},
+                        { 'comment': c['comment'],
+                          'slices': c['slices'],
+                          'banks': c['banks'].join(',')
+                        }).$promise.then(function(data){
+                          $scope.msg = "Task updated";
+                        });
+
+        c['save'] = false;
+        $scope.msg = "";
       };
       $scope.newcron = function() {
         $scope.cron.push({ 'comment': 'new', 'slices': '* * 1 * *', 'banks': []});
       }
+      $scope.updateCron = function(c){
+        c['save'] = true;
+        c['oldcomment'] = c['comment'];
+      }
       $scope.addToCron = function(c) {
         c.banks.push(c.add);
+        c['save'] = true;
       };
+      $scope.removeFromCron = function(c, b) {
+        var index = c.banks.indexOf(b);
+        c.banks.splice(index, 1);
+        c['save'] = true;
+      }
+      $scope.removeCron = function(c) {
+        Schedule.remove({'name': c['comment']},{});
+        for (var i =0; i < $scope.cron.length; i++)
+          if ($scope.cron[i].comment === c['comment']) {
+              $scope.cron.splice(i,1);
+              break;
+        }
+      };
+
       Schedule.list().$promise.then(function(data){
         for(var i=0;i<data.length;i++){
-          data['save'] = False;
+          data['save'] = false;
         }
         $scope.cron = data;
       });

@@ -97,24 +97,22 @@ def unsetschedule(request):
 @view_config(route_name='updateschedulebank', renderer='json', request_method='POST')
 def setschedule(request):
   jobs = []
-  cron_time = request.matchdict['time']
-  cron_banks = request.matchdict['banks']
-  cron_name = request.matchdict['name']
+  cron_oldname = request.matchdict['name']
+  cron = json.loads(request.body)
+  cron_time = cron['slices']
+  cron_banks = cron['banks']
+  cron_newname = cron['comment']
   cron  = CronTab(user=True)
-  cron.remove_all(comment=cron_name)
+  cron.remove_all(comment=cron_oldname)
   settings = request.registry.settings
   global_properties = settings['global_properties']
   biomaj_cli = settings['biomaj_cli']
 
-  cmd = biomaj_cli+" --config "+global_properties+" --update --bank "+bank
-  job = cron.new(command=cmd, comment=cron_name)
+  cmd = biomaj_cli+" --config "+global_properties+" --update --bank "+cron_banks
+  job = cron.new(command=cmd, comment=cron_newname)
   job.setall(cron_time)
   cron.write()
-  for job in cron:
-    if job.command.startswith(biomaj_cli):
-      banks = job.command.split('--bank')[1].strip().split(',')
-      jobs.append({'comment': job.comment, 'slices': str(job.slices), 'banks': banks})
-  return jobs
+  return []
 
 
 @view_config(route_name='search_format_type', renderer='json', request_method='GET')

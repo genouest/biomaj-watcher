@@ -4,6 +4,13 @@ body { padding-top: 70px; }
   margin: 5px;
 }
 
+.cronbank {
+  margin: 10px;
+}
+
+.cron-action {
+  margin-left: 6px;
+}
 .bankchart {
   height: 300px;
 }

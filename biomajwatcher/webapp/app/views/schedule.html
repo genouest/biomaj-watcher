@@ -1,22 +1,29 @@
+<div class="row" ng-if="msg">
+  <div class="alert alert-warning alert-dismissible" role="alert"><button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>{{msg}}</div>
+</div>
 <div class="row">
-
-    <button class="btn btn-primary" ng-click="newcron()" >Add</button>
+  <div class="col-sm-6">
+    <button class="btn btn-lg btn-primary" ng-click="newcron()" >Add</button>
+  </div>
+  <div class="col-sm-6">
     <div ng-repeat="c in cron">
       <div class="panel panel-default">
-        <div class="panel-heading"><div editable-text="c.comment">{{c.comment}}</div> <button ng-if="b.save" ng-click="save(b)">SAVE</button></div>
+        <div class="panel-heading"><h4 editable-text="c.comment" onbeforesave="updateCron(c)">{{c.comment}}</h4> <button class="btn btn-primary cron-action" ng-if="c.save" ng-click="save(c)">SAVE</button><button ng-click="removeCron(c)" class="btn btn-primary cron-action">Remove <span class="glyphicon glyphicon-trash"> </span></button></div>
         <div class="panel-body">
-          <div editable-text="c.slices">{{c.slices}}</div>
+          <div class="col-sm-2" editable-text="c.slices" onbeforesave="updateCron(c)">{{c.slices}}</div>
           <div class="row">
             <div class="col-sm-4">
-              <input type="text" ng-model="c.add" typeahead="name for name in names | filter:$viewValue | limitTo:8" class="form-control">
+              <input type="text" ng-model="c.add" placeholder="bank name" typeahead="name for name in names | filter:$viewValue | limitTo:8" class="form-control"></input>
             </div>
             <div class="col-sm-1">
               <button class="btn btn-primary" ng-click="addToCron(c)">Add</button>
             </div>
           </div>
-          {{c.banks}}
+          <div ng-repeat="b in c.banks">
+            <div class="cronbank">{{b}} <button ng-click="removeFromCron(c, b)" class="btn btn-xs btn-primary cron-action"> <span class="glyphicon glyphicon-trash"> </span></button></dib>
+          </div>
         </div>
       </div>
     </div>
-
+  </div>
 </div>
