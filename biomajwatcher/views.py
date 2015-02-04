@@ -376,6 +376,41 @@ def bank_config(request):
 
 @view_config(route_name='bankconfig', renderer='json', request_method='POST')
 def update_bank_config(request):
+  props = json.loads(request.body)
+
+  bank = Bank(request.matchdict['id'], no_log=True)
+  if not can_edit_bank(request, bank.bank):
+    return HTTPForbidden('Not authorized to access this resource')
+
+  configparser = bank.config.config_bank
+  if key == 'no.extract':
+    if props['no.extract']:
+      props['no.extract'] = 'true'
+    else:
+      props['no.extract'] = 'false'
+  if 'depends' in props and props['depends']:
+    depnames = []
+    for dep in props['depends']:
+      depnames.append(dep['name'])
+      props[dep['name']+'.files.move'] = dep['files.move']
+    props['depends'] = ','.join(depnames)
+  if 'multi' in props and props['multi']:
+    count = 0
+    for m in props['multi']:
+      props['remote.file.'+str(count)+'name'] = m['name']
+      props['remote.file.'+str(count)+'method'] = m['method']
+      props['remote.file.'+str(count)+'protocol'] = m['protocol']
+      props['remote.file.'+str(count)+'server'] = m['server']
+      props['remote.file.'+str(count)+'path'] = m['path']
+      props['remote.file.'+str(count)+'credentials'] = m['credentials']
+      count += 1
+  del props['multi']
+
+
+  # loop over key/values and update configparser, then write to file
+
+
+  print str(props)
   return {'msg': 'bank created/updated'}
 
 

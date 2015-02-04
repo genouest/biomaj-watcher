@@ -259,6 +259,12 @@ angular.module('biomaj').controller('bankEditCtrl',
         $scope.config = data;
       });
 
+      $scope.save_config = function() {
+        Bank.saveconfig({name: $routeParams.name},$scope.config).$promise.then(function(data) {
+          alert(data.msg);
+        });
+      };
+
       $scope.bank_depends_selected = "";
       $scope.bank_depends_add = function() {
         if($scope.config['depends'] === undefined) {
@@ -336,7 +342,8 @@ angular.module('biomaj').controller('bankEditCtrl',
           'method': 'GET',
           'protocol': '',
           'server': '',
-          'path': ''
+          'path': '',
+          'credentials': ''
         });
       };
 

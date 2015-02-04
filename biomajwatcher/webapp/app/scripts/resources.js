@@ -118,6 +118,12 @@
               isArray: false,
               cache: false
             },
+            saveconfig: {
+              url: '/bank/:name/config',
+              method: 'POST',
+              isArray: false,
+              cache: false
+            },
             locked: {
               url: '/bank/:name/locked',
               method: 'GET',

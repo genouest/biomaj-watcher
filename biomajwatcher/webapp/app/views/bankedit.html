@@ -1,6 +1,7 @@
 <form class="form-horizontal">
   <span><small>Parameters marked with (*) are mandatory</small></span>
 <div class="row">
+  <button type="button" class="btn btn-lg btn-primary" ng-click="save_config()">SAVE BANK CONFIGURATION</button>
   <div class="panel panel-default">
     <div class="panel-heading">General</div>
       <div class="panel-body">
@@ -34,7 +35,7 @@
         <div class="form-group" ng-repeat="dep in config['depends']">
           <label  class="col-sm-2 control-label">Dependencies</label>
           <div class="col-sm-10">
-            <input ng-model="dep.name"  class="form-control" placeholder="bank name">
+            <input ng-model="dep['name']"  class="form-control" placeholder="bank name">
           </div>
           <label  class="col-sm-2 control-label">Files to copy</label>
           <div class="col-sm-10">
