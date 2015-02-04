@@ -57,6 +57,7 @@ def main(global_config, **settings):
     config.add_route('bankdetails', '/bank/{id}')
     config.add_route('banklocked', '/bank/{id}/locked')
     config.add_route('bankstatus', '/bank/{id}/status')
+    config.add_route('bankconfig', '/bank/{id}/config')
     config.add_route('bankreleaseremove', '/bank/{id}/{release}')
     config.add_route('sessionlog', '/bank/{id}/log/{session}')
 

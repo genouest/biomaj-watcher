@@ -1,0 +1,368 @@
+<form class="form-horizontal">
+  <span><small>Parameters marked with (*) are mandatory</small></span>
+<div class="row">
+  <div class="panel panel-default">
+    <div class="panel-heading">General</div>
+      <div class="panel-body">
+        <div class="form-group">
+          <label for="db_name" class="col-sm-2 control-label">Name *</label>
+          <div class="col-sm-10">
+            <input ng-model="config['db.name']" id="db_name" class="form-control" placeholder="Bank name">
+          </div>
+          <label for="db_fullname" class="col-sm-2 control-label">Full name</label>
+          <div class="col-sm-10">
+            <input ng-model="config['db.fullname']" id="db_fullname" class="form-control" placeholder="Description">
+          </div>
+          <label for="db_type" class="col-sm-2 control-label">Type</label>
+          <div class="col-sm-10">
+            <input ng-model="config['db.type']" id="db_type" class="form-control" placeholder="nucleic,proteic (comma separated)">
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="row">
+  <div class="panel panel-default">
+    <div class="panel-heading">Computed banks
+        <select ng-model="bank_depends_selected">
+          <option ng-repeat="b in banklist">{{b}}</option>
+        </select>
+        <button class="btn btn-primary" ng-click="bank_depends_add()">Add</button></div>
+      <div class="panel-body">
+        <div class="form-group" ng-repeat="dep in config['depends']">
+          <label  class="col-sm-2 control-label">Dependencies</label>
+          <div class="col-sm-10">
+            <input ng-model="dep.name"  class="form-control" placeholder="bank name">
+          </div>
+          <label  class="col-sm-2 control-label">Files to copy</label>
+          <div class="col-sm-10">
+            <input ng-model="dep['files.move']"  class="form-control" placeholder="Regexp of files to move  flat/.*">
+          </div>
+          <div class="col-sm-offset-2 col-sm-8">
+            <button ng-click="bank_depends_rm(dep.name)" class="btn btn-sm" type="button">Remove {{dep.name}}<span class="glyphicon glyphicon-trash"> </span></button>
+          </div>
+        </div>
+        <label  class="col-sm-2 control-label">Release reference</label>
+        <div class="col-sm-10">
+          <input ng-model="config['ref.release']"  class="form-control" placeholder="bank name used as reference">
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="row">
+  <div class="panel panel-default">
+    <div class="panel-heading">Directories</div>
+      <div class="panel-body">
+        <div class="form-group">
+          <label for="dir_version" class="col-sm-2 control-label">Version directory *</label>
+          <div class="col-sm-10">
+            <input ng-model="config['dir.version']" id="dir_version" class="form-control" placeholder="Sub directory under data.dir: ncbi/mybank">
+          </div>
+          <label for="offline.dir" class="col-sm-2 control-label">Offline directory</label>
+          <div class="col-sm-10">
+            <input ng-model="config['offline.dir']" id="offline_dir" class="form-control" placeholder="offline/mybank">
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="row">
+  <div class="panel panel-default">
+    <div class="panel-heading">PreProcesses
+    </div>
+      <div class="panel-body">
+        <button type="button" class="btn btn-primary" ng-click="bank_show('pre', meta['name'])" data-toggle="modal" data-target="#processes">Show Metas</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<div class="row">
+  <div class="panel panel-default">
+    <div class="panel-heading">Synchronization</div>
+      <div class="panel-body">
+        <div class="form-group">
+          <label for="protocol" class="col-sm-2 control-label">Protocol *</label>
+          <div class="col-sm-10">
+            <select ng-model="config['protocol']" id="protocol" class="form-control">
+              <option value="http">HTTP</option>
+              <option value="ftp">FTP</option>
+              <option value="sftp">SFTP</option>
+              <option value="local">Local (cp)</option>
+              <option value="directhttp">Direct HTTP</option>
+              <option value="directftp">Direct FTP</option>
+              <option value="multi">Multiple location downloads</option>
+            </select>
+          </div>
+          <label for="server" class="col-sm-2 control-label">Remote server *</label>
+          <div class="col-sm-10">
+            <input ng-model="config['server']" id="server" class="form-control" placeholder="Server name: ftp.ncbi.nih.gov">
+          </div>
+          <label for="remote_dir" class="col-sm-2 control-label">Remote directory</label>
+          <div class="col-sm-10">
+            <input ng-model="config['remote.dir']" id="remote_dir" class="form-control" placeholder="Root directory of remote files: /blast/db/FASTA">
+          </div>
+          <label for="remote_files" class="col-sm-2 control-label">Remote files patterns</label>
+          <div class="col-sm-10">
+            <input ng-model="config['remote.files']" id="remote_files" class="form-control" placeholder="Regular expression matching file names: ^alu.*\\.gz$">
+          </div>
+          <label for="local_files" class="col-sm-2 control-label">Local files patterns (offline -> release)</label>
+          <div class="col-sm-10">
+            <input ng-model="config['local.files']" id="local_files" class="form-control" placeholder="Regular expression to copy from offline directory to production directory: ^alu\.(a|n).*">
+          </div>
+          <div class="col-sm-offset-2 col-sm-10">
+            <div class="checkbox">
+              <label>
+                <input ng-model="config['no.extract']" type="checkbox"> Do not uncompress remote archives
+              </label>
+            </div>
+          </div>
+
+        </div>
+        <div class="form-group" ng-if="config['protocol'] == 'multi'">
+          <h4 class="col-sm-offset-1">Multiple files download <button type="button" class="btn btn-primary" ng-click="add_multi_file()">Add</button></h4>
+          <div ng-repeat="m in config['multi']">
+            <label  class="col-sm-2 control-label">Protocol</label>
+            <div class="col-sm-10">
+              <select ng-model="m['protocol']" class="form-control">
+                <option value="http">HTTP</option>
+                <option value="ftp">FTP</option>
+                <option value="sftp">SFTP</option>
+                <option value="local">Local (cp)</option>
+                <option value="directhttp">Direct HTTP</option>
+                <option value="directftp">Direct FTP</option>
+              </select>
+            </div>
+            <label  class="col-sm-2 control-label">Server</label>
+            <div class="col-sm-10">
+              <input ng-model="m['server']"  class="form-control" placeholder="">
+            </div>
+            <label  class="col-sm-2 control-label">Path</label>
+            <div class="col-sm-10">
+              <input ng-model="m['path']"  class="form-control" placeholder="remote file url path">
+            </div>
+            <label  class="col-sm-2 control-label">Credentials</label>
+            <div class="col-sm-10">
+              <input ng-model="m['credentials']"  class="form-control" placeholder="credential access user:password">
+            </div>
+            <label  class="col-sm-2 control-label">Save as</label>
+            <div class="col-sm-10">
+              <input ng-model="m['name']"  class="form-control" placeholder="Save remote file with this name">
+            </div>
+            <label ng-if="m['protocol'] == 'directhttp'" class="col-sm-2 control-label">Method</label>
+            <div ng-if="m['protocol'] == 'directhttp'" class="col-sm-10">
+              <select ng-model="m['method']">
+                <option>POST</option>
+                <option>GET</option>
+              </select>
+            </div>
+            <div class="col-sm-offset-2 col-sm-10">
+              <button ng-click="rm_multi_file(m['path'])" class="btn btn-sm" type="button">Remove {{m['path']}}<span class="glyphicon glyphicon-trash"> </span></button>
+            </div>
+          </div>
+      </div>
+        <div class="form-group">
+          <h4 class="col-sm-offset-1">Release (optional)</h4>
+          <label for="release_file" class="col-sm-2 control-label">Release file</label>
+          <div class="col-sm-10">
+            <input ng-model="config['release.file']" id="release_file" class="form-control" placeholder="File path used to determine release: /doc/release.txt, /doc/rel_(\d+)\.txt">
+          </div>
+          <label for="release_regexp" class="col-sm-2 control-label">Release expression</label>
+          <div class="col-sm-10">
+            <input ng-model="config['release.regexp']" id="release_regexp" class="form-control" placeholder="Regexp in file to extract release">
+          </div>
+          <label for="release_protocol" class="col-sm-2 control-label">Release protocol</label>
+          <div class="col-sm-10">
+            <select ng-model="config['release.protocol']" id="release_protocol" class="form-control">
+              <option value="http">HTTP</option>
+              <option value="ftp">FTP</option>
+              <option value="sftp">SFTP</option>
+              <option value="local">Local (cp)</option>
+              <option value="directhttp">Direct HTTP</option>
+              <option value="directftp">Direct FTP</option>
+            </select>
+          </div>
+          <label for="release_server" class="col-sm-2 control-label">Release server</label>
+          <div class="col-sm-10">
+            <input ng-model="config['release.server']" id="release_server" class="form-control" placeholder="Server where release info is">
+          </div>
+          <label for="release_remote_dir" class="col-sm-2 control-label">Release remote dir</label>
+          <div class="col-sm-10">
+            <input ng-model="config['release.remote.dir']" id="release_remote_dir" class="form-control" placeholder="Path where release info is">
+          </div>
+        </div>
+        <div class="form-group">
+          <h4 class="col-sm-offset-1">Options</h4>
+          <label for="files_num_threads" class="col-sm-2 control-label">Number of threads</label>
+          <div class="col-sm-10">
+            <input ng-model="config['files.num.threads']" id="files_num_threads" class="form-control" placeholder="number of parallel downloads">
+          </div>
+          <label for="http_parse_dir_line" class="col-sm-2 control-label">HTTP dir regexp</label>
+          <div class="col-sm-10">
+            <input ng-model="config['http.parse.dir.line']" id="http_parse_dir_line" class="form-control" placeholder="Regexp">
+          </div>
+          <label for="http_group_dir_name" class="col-sm-2 control-label">Dir name match</label>
+          <div class="col-sm-10">
+            <input ng-model="config['http.group.dir.name']" id="http_group_dir_name" class="form-control" placeholder="Regexp match: 1">
+          </div>
+          <label for="http_group_dir_date" class="col-sm-2 control-label">Dir date match</label>
+          <div class="col-sm-10">
+            <input ng-model="config['http.group.dir.date']" id="http_group_dir_date" class="form-control" placeholder="Regexp match: 2">
+          </div>
+          <label for="http_parse_file_line" class="col-sm-2 control-label">HTTP file regexp</label>
+          <div class="col-sm-10">
+            <input ng-model="config['http.parse.file.line']" id="http_parse_file_line" class="form-control" placeholder="Regexp">
+          </div>
+          <label for="http_group_file_name" class="col-sm-2 control-label">File name match</label>
+          <div class="col-sm-10">
+            <input ng-model="config['http.group.file.name']" id="http_group_file_name" class="form-control" placeholder="Regexp match: 1">
+          </div>
+          <label for="http_group_file_date" class="col-sm-2 control-label">File date match</label>
+          <div class="col-sm-10">
+            <input ng-model="config['http.group.file.date']" id="http_group_file_date" class="form-control" placeholder="Regexp match: 2">
+          </div>
+          <label for="http_group_file_size" class="col-sm-2 control-label">File size match</label>
+          <div class="col-sm-10">
+            <input ng-model="config['http.group.file.size']" id="http_group_file_size" class="form-control" placeholder="Regexp match: 3">
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+</div>
+
+
+
+<div class="row">
+  <div class="panel panel-default">
+    <div class="panel-heading">Post Processes
+      <button type="button" class="btn btn-primary" ng-click="add_block()">Add Block</button>
+    </div>
+    <div class="panel-body">
+      <div class="form-group" ng-repeat="block in config['blocks']">
+        <label class="col-sm-2 control-label">Name
+          <button type="button" class="btn btn-primary" ng-click="bank_block_show(block['name'])" data-toggle="modal" data-target="#processes">Show block</button>
+        </label>
+        <div class="col-sm-10" >
+          <input ng-model="block['name']" class="form-control" placeholder="block name">
+        </div>
+        <div class="col-sm-offset-2 col-sm-8">
+          <button ng-click="bank_block_rm(block['name'])" class="btn btn-sm" type="button">Remove {{block['name']}}<span class="glyphicon glyphicon-trash"> </span></button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="row">
+  <div class="panel panel-default">
+    <div class="panel-heading">Deployment</div>
+      <div class="panel-body">
+        <div class="form-group">
+          <label for="keep_old_version" class="col-sm-2 control-label">Number of releases *</label>
+          <div class="col-sm-10">
+            <input ng-model="config['keep.old.version']" id="keep_old_version" class="form-control" placeholder="Keep N old releases online: 1">
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="row">
+  <div class="panel panel-default">
+    <div class="panel-heading">Remove Processes
+    </div>
+      <div class="panel-body">
+        <button type="button" class="btn btn-primary" ng-click="bank_show('remove', meta['name'])" data-toggle="modal" data-target="#processes">Show Metas</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="modal fade" id="processes" tabindex="-1" role="dialog" aria-labelledby="processes">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h4 class="modal-title">{{section.toUpperCase()}} Processes <button type="button" class="btn btn-primary" ng-click="add_meta(section)">Add Meta</button></h4>
+      </div>
+      <div class="modal-body">
+        <div class="form-group meta" ng-repeat="meta in metas">
+          <label class="col-sm-2 control-label">Name
+            <button type="button" class="btn btn-primary" ng-click="add_proc(section,meta['name'])">Add Process</button>
+          </label>
+          <div class="col-sm-10" >
+            <input ng-model="meta['name']" class="form-control" placeholder="metaprocess name">
+          </div>
+          <div class="col-sm-12 process" ng-repeat="proc in meta['procs']">
+            <label class="col-sm-4 control-label">Name *</label>
+            <div class="col-sm-8" >
+              <input ng-model="proc['name']" class="form-control" placeholder="process name">
+            </div>
+            <label class="col-sm-4 control-label">Description</label>
+            <div class="col-sm-8" >
+              <input ng-model="proc['desc']" class="form-control" placeholder="process description">
+            </div>
+            <label class="col-sm-4 control-label">Executable *</label>
+            <div class="col-sm-8" >
+              <input ng-model="proc['exe']" class="form-control" placeholder="process exec path">
+            </div>
+            <label class="col-sm-4 control-label">Arguments</label>
+            <div class="col-sm-8" >
+              <input ng-model="proc['args']" class="form-control" placeholder="process arguments">
+            </div>
+            <label class="col-sm-4 control-label">Types</label>
+            <div class="col-sm-8" >
+              <input ng-model="proc['types']" class="form-control" placeholder="generated files types, comma separated">
+            </div>
+            <label class="col-sm-4 control-label">Format</label>
+            <div class="col-sm-8" >
+              <input ng-model="proc['format']" class="form-control" placeholder="generated files format, comma separated">
+            </div>
+            <label class="col-sm-4 control-label">Tags</label>
+            <div class="col-sm-8" >
+              <input ng-model="proc['tags']" class="form-control" placeholder="generated files tags, comma separated (chr:chr1,organism:human)">
+            </div>
+            <label class="col-sm-4 control-label">Generated files</label>
+            <div class="col-sm-8" >
+              <input ng-model="proc['files']" class="form-control" placeholder="list of files, comma separated">
+            </div>
+            <label class="col-sm-4 control-label">Drmaa execution</label>
+            <div class="col-sm-8" >
+              <input ng-model="proc['cluster']" class="form-control" placeholder="Execute on DRMAA compliant cluster">
+            </div>
+            <label class="col-sm-4 control-label">Drmaa native spec</label>
+            <div class="col-sm-8" >
+              <input ng-model="proc['native']" class="form-control" placeholder=" -q myqueue">
+            </div>
+            <label class="col-sm-4 control-label">Docker</label>
+            <div class="col-sm-8" >
+              <input ng-model="proc['docker']" class="form-control" placeholder="Docker image">
+            </div>
+            <div class="col-sm-offset-2 col-sm-8">
+              <button ng-click="bank_proc_rm(section,meta['name'],proc['name'])" class="btn btn-sm" type="button">Remove {{proc['name']}}<span class="glyphicon glyphicon-trash"> </span></button>
+            </div>
+          </div>
+          <div class="col-sm-offset-2 col-sm-8">
+            <button ng-click="bank_meta_rm(section,meta['name'])" class="btn btn-sm" type="button">Remove {{meta['name']}}<span class="glyphicon glyphicon-trash"> </span></button>
+          </div>
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+      </div>
+    </div><!-- /.modal-content -->
+  </div><!-- /.modal-dialog -->
+</div><!-- /.modal -->
+
+</form>

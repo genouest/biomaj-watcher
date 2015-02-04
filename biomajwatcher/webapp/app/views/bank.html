@@ -3,7 +3,12 @@
   <div class="col-sm-12 col-md-6">
 
     <div class="panel panel-default">
-      <div class="panel-heading">Properties</div>
+      <div class="panel-heading">Properties
+      <a ng-href="#/bank/{{name}}/edit" >
+          <i class="glyphicon glyphicon-wrench"></i>
+
+      </a>
+      </div>
       <div class="panel-body">
         <div>Owner: {{ bank.properties.owner}}</div>
         <div>Type: {{ bank.properties.type.join(',')}}</div>

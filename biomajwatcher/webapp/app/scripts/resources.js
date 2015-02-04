@@ -112,6 +112,12 @@
               isArray: false,
               cache: false
             },
+            config: {
+              url: '/bank/:name/config',
+              method: 'GET',
+              isArray: false,
+              cache: false
+            },
             locked: {
               url: '/bank/:name/locked',
               method: 'GET',

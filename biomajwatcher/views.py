@@ -169,6 +169,23 @@ def can_read_bank(request, bank):
   return False
 
 
+def can_edit_bank(request, bank):
+  '''
+  Checks if user can edit bank
+
+  :param request: Request
+  :type request: Request
+  :param name: Bank
+  :type name: :class:`biomaj.bank.Bank.bank`
+  '''
+  user_id = request.authenticated_userid
+  if user_id is None:
+    return False
+  settings = request.registry.settings
+  if user_id in settings['admin'].split(',') or user_id == bank['properties']['owner']:
+    return True
+  return False
+
 def is_authenticated(request):
   user_id = request.authenticated_userid
   if user_id:
@@ -244,6 +261,122 @@ def logout(request):
   headers = forget(request)
   request.response.headerlist.extend(headers)
   return { 'user': None, 'is_admin': False }
+
+
+
+def get_block(configparser, block):
+  '''
+  Get blocks
+  '''
+  blocks = [x.strip() for x in block.split(',')]
+  res = []
+  for block in blocks:
+    res.append({
+      'name': block,
+      'metas': get_metas(configparser,configparser.get('GENERAL',block+'.db.post.process') )
+    })
+  return res
+
+
+
+def get_metas(configparser, metas):
+  '''
+  Get meta processes
+  '''
+  meta_procs = [x.strip() for x in metas.split(',')]
+  res = []
+  for meta in meta_procs:
+    res.append({
+     'name': meta,
+     'procs': get_procs(configparser, configparser.get('GENERAL',meta))
+  })
+  return res
+
+def get_option(configparser, option):
+  if configparser.has_option('GENERAL', option):
+    return configparser.get('GENERAL', option)
+  else:
+    return None
+
+def get_procs(configparser, proc):
+  '''
+  Get blocks
+  '''
+  meta_procs = [x.strip() for x in proc.split(',')]
+  res = []
+  for proc in meta_procs:
+    res.append({
+      'name': get_option(configparser, proc+'.name'),
+      'desc': get_option(configparser, proc+'.desc'),
+      'cluster': get_option(configparser, proc+'.cluster'),
+      'native': get_option(configparser, proc+'.native'),
+      'docker': get_option(configparser, proc+'.docker'),
+      'type': get_option(configparser, proc+'.type'),
+      'exe': get_option(configparser, proc+'.exe'),
+      'args': get_option(configparser, proc+'.args'),
+      'format': get_option(configparser, proc+'.format'),
+      'types': get_option(configparser, proc+'.types'),
+      'tags': get_option(configparser, proc+'.tags'),
+      'files': get_option(configparser, proc+'.files')
+    })
+  return res
+
+@view_config(route_name='bankconfig', renderer='json', request_method='GET')
+def bank_config(request):
+  bank = Bank(request.matchdict['id'], no_log=True)
+  if not can_edit_bank(request, bank.bank):
+    return HTTPForbidden('Not authorized to access this resource')
+
+  configparser = bank.config.config_bank
+  config = {}
+  for item,value in configparser.items('GENERAL'):
+    if item == 'db.remove.process':
+      metas = get_metas(configparser, value)
+      config[item] = metas
+    elif item == 'db.pre.process':
+      metas = get_metas(configparser, value)
+      config[item] = metas
+    elif item == 'blocks':
+      config[item] = get_block(configparser, value)
+    elif item == 'depends':
+      depends = [x.strip() for x in value.split(',')]
+      config[item] = []
+      for dep in depends:
+        dep_item = { 'name': dep, 'files.move': None }
+        files_move = get_option(configparser, dep+'.files.move')
+        if files_move:
+          dep_item['files.move'] = files_move
+        config[item].append(dep_iem)
+    elif item == 'no.extract':
+      if value == "true" or value == "1":
+        config[item] = True
+      else:
+        config[item] = False
+    elif item == 'protocol' and 'multi' == get_option(configparser, 'protocol'):
+      config['multi'] = []
+      do_match = True
+      match = 0
+      while(do_match):
+        match_path = configparser.get('GENERAL', 'remote.files'+str(match)+'.path')
+        if match_path:
+          config[item].append({
+            'protocol':configparser.get('GENERAL', 'remote.files'+str(match)+'.protocol'),
+            'server':configparser.get('GENERAL', 'remote.files'+str(match)+'.server'),
+            'path': match_path,
+            'name':configparser.get('GENERAL', 'remote.files'+str(match)+'.name'),
+            'method':configparser.get('GENERAL', 'remote.files'+str(match)+'.method'),
+            'credentials':configparser.get('GENERAL', 'remote.files'+str(match)+'.credentials')
+          })
+        else:
+          do_match = False
+    else:
+      config[item] = configparser.get('GENERAL', item)
+  return config
+
+@view_config(route_name='bankconfig', renderer='json', request_method='POST')
+def update_bank_config(request):
+  return {'msg': 'bank created/updated'}
+
 
 @view_config(route_name='bankreleaseremove', renderer='json', request_method='DELETE')
 def bank_release_remove(request):

@@ -1,5 +1,20 @@
 body { padding-top: 70px; }
 
+.meta {
+  border-style: solid;
+  border-width: 2px;
+}
+
+.process {
+  margin: 10px;
+  border-style: solid;
+  border-width: 1px;
+}
+
+#processes {
+  color: black;
+}
+
 .bankdg {
   margin: 5px;
 }

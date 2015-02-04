@@ -35,6 +35,10 @@ config(['$routeProvider','$logProvider',
             templateUrl: 'views/bank.html',
             controller: 'bankCtrl'
         });
+        $routeProvider.when('/bank/:name/edit', {
+            templateUrl: 'views/bankedit.html',
+            controller: 'bankEditCtrl'
+        });
         $routeProvider.when('/bank/:name/:release', {
             templateUrl: 'views/release.html',
             controller: 'bankReleaseCtrl'
@@ -106,7 +110,7 @@ angular.module('biomaj').controller('scheduleCtrl',
         $scope.msg = "";
       };
       $scope.newcron = function() {
-        $scope.cron.push({ 'comment': 'new', 'slices': '* * 1 * *', 'banks': []});
+        $scope.cron.push({ 'comment': 'newcrontask', 'slices': '* * 1 * *', 'banks': []});
       }
       $scope.updateCron = function(c){
         c['save'] = true;
@@ -240,6 +244,205 @@ angular.module('biomaj').controller('sessionLogCtrl',
         .error(function(){
           $scope.log = 'Log file not found';
         });
+    });
+
+
+angular.module('biomaj').controller('bankEditCtrl',
+    function ($scope, $routeParams, $log, $interval, Bank, BankStatus, Auth) {
+      if(Auth.isConnected()) {
+        $scope.user = Auth.getUser();
+      }
+      else {
+        $scope.user = null;
+      }
+      Bank.config({name: $routeParams.name}).$promise.then(function(data) {
+        $scope.config = data;
+      });
+
+      $scope.bank_depends_selected = "";
+      $scope.bank_depends_add = function() {
+        if($scope.config['depends'] === undefined) {
+          $scope.config['depends'] = [];
+        }
+        $scope.config['depends'].push({ 'name': $scope.bank_depends_selected, 'files.move': ''});
+      };
+
+      $scope.bank_depends_rm = function(name) {
+        var index = -1;
+        for(var i=0;i<$scope.config['depends'].length;i++) {
+          if($scope.config['depends'][i]['name'] == name) {
+            index = i;
+            break;
+          }
+        }
+        $scope.config['depends'].splice(index,1);
+      };
+
+      $scope.add_meta = function(section) {
+
+        if($scope.config['db.'+section+'.process'] === undefined) {
+          $scope.config['db.'+section+'.process'] = [];
+        }
+
+        var metas = null;
+        if(section == 'post') {
+          metas = $scope.metas;
+        }
+        else {
+          metas = $scope.config['db.'+section+'.process'];
+        }
+
+        metas.push({
+          'name': new Date().getTime(),
+          'procs': []
+        });
+      };
+
+      $scope.add_proc = function(section, meta) {
+
+        var metas = null;
+        if(section == 'post') {
+          metas = $scope.metas;
+        }
+        else {
+          metas = $scope.config['db.'+section+'.process'];
+        }
+
+        for(var i=0;i<metas.length;i++){
+          if(metas[i]['name'] == meta) {
+            metas[i]['procs'].push({
+              'name': '',
+              'desc': '',
+              'cluster': '',
+              'native': '',
+              'docker': '',
+              'exe': '',
+              'args': '',
+              'format': '',
+              'types': '',
+              'tags': '',
+              'files': ''
+            });
+            break;
+          }
+        }
+      };
+      $scope.add_multi_file = function() {
+        if($scope.config['multi'] == undefined) {
+          $scope.config['multi'] = [];
+        }
+        $scope.config['multi'].push({
+          'name': '',
+          'method': 'GET',
+          'protocol': '',
+          'server': '',
+          'path': ''
+        });
+      };
+
+      $scope.rm_multi_file = function(path) {
+        var index = -1;
+        for(var i=0;i<$scope.config['multi'].length;i++){
+          if($scope.config['multi'][i]['path'] == path) {
+            index = i;
+            break;
+          }
+        }
+        $scope.config['multi'].splice(index, 1);
+      };
+
+      $scope.bank_meta_rm = function(section, meta) {
+        var index = -1;
+        var metas = null;
+        if(section == 'post') {
+          metas = $scope.metas;
+        }
+        else {
+          metas = $scope.config['db.'+section+'.process'];
+        }
+
+        for(var i=0;i<metas.length;i++){
+          if(metas[i]['name'] == meta) {
+            index = i;
+            break;
+          }
+        }
+        metas.splice(index, 1);
+      };
+
+      $scope.bank_block_rm = function(block) {
+        var index = -1;
+
+        for(var i=0;i<$scope.config['blocks'].length;i++){
+          if($scope.config['blocks'][i]['name'] == block) {
+            index = i;
+            break;
+          }
+        }
+        $scope.config['blocks'].splice(index, 1);
+      };
+
+      $scope.bank_block_show = function(block) {
+        $scope.section = 'post';
+        for(var i=0;i<$scope.config['blocks'].length;i++){
+          if($scope.config['blocks'][i]['name'] == block) {
+            $scope.metas = $scope.config['blocks'][i]['metas'];
+            break;
+          }
+        }
+      };
+
+      $scope.bank_show = function(section) {
+        $scope.section = section;
+        if($scope.config['db.'+section+'.process'] === undefined) {
+          $scope.config['db.'+section+'.process'] = [];
+        }
+        $scope.metas = $scope.config['db.'+section+'.process'];
+      };
+
+      $scope.add_block = function() {
+        if($scope.config['blocks'] === undefined) {
+          $scope.config['blocks'] = [];
+        }
+        $scope.config['blocks'].push({
+          'name': new Date().getTime(),
+          'metas': []
+        });
+      };
+
+      $scope.bank_proc_rm = function(section, meta, proc) {
+        var metas = null;
+        if(section == 'post') {
+          metas = $scope.metas;
+        }
+        else {
+          metas = $scope.config['db.'+section+'.process'];
+        }
+
+        for(var i=0;i<metas.length;i++){
+          if(metas[i]['name'] == meta) {
+            var index = -1;
+            for(var j=0;j<metas[i]['procs'].length;j++){
+              if(metas[i]['procs']['name'] == proc) {
+                index = j;
+                break;
+              }
+            }
+            metas[i]['procs'].splice(index, 1);
+            break;
+          }
+        }
+      };
+
+
+
+      Bank.list().$promise.then(function(banks) {
+        var banklist = [];
+        for(var i=0;i<banks.length;i++) {
+          banklist.push(banks[i].name);
+        }
+        $scope.banklist = banklist;
+      });
     });
 
 angular.module('biomaj').controller('bankCtrl',
@@ -488,6 +691,9 @@ angular.module('biomaj').controller('statsCtrl',
         }
         else if(size > 1024) {
           return Math.floor(size/(1024))+'Kb';
+        }
+        else {
+          return size+'b';
         }
       };
 
