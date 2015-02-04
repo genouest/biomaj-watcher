@@ -367,6 +367,7 @@ def bank_config(request):
             'method':configparser.get('GENERAL', 'remote.files'+str(match)+'.method'),
             'credentials':configparser.get('GENERAL', 'remote.files'+str(match)+'.credentials')
           })
+          match += 1
         else:
           do_match = False
     else:
