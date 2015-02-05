@@ -2,6 +2,9 @@
   <span><small>Parameters marked with (*) are mandatory</small></span>
 <div class="row">
   <button type="button" class="btn btn-lg btn-primary" ng-click="save_config()">SAVE BANK CONFIGURATION</button>
+  <button type="button" class="btn btn-info" data-toggle="collapse" data-target=".advanced">
+  Show/Hide advanced options
+</button>
   <div class="panel panel-default">
     <div class="panel-heading">General</div>
       <div class="panel-body">
@@ -24,7 +27,7 @@
   </div>
 </div>
 
-<div class="row">
+<div class="row advanced collapse in">
   <div class="panel panel-default">
     <div class="panel-heading">Computed banks
         <select ng-model="bank_depends_selected">
@@ -63,7 +66,7 @@
           <div class="col-sm-10">
             <input ng-model="config['dir.version']" id="dir_version" class="form-control" placeholder="Sub directory under data.dir: ncbi/mybank">
           </div>
-          <label for="offline_dir_name" class="col-sm-2 control-label">Offline directory</label>
+          <label for="offline_dir_name" class="col-sm-2 control-label">Offline directory *</label>
           <div class="col-sm-10">
             <input ng-model="config['offline.dir.name']" id="offline_dir_name" class="form-control" placeholder="offline/mybank">
           </div>
@@ -73,7 +76,7 @@
   </div>
 </div>
 
-<div class="row">
+<div class="row advanced collapse in">
   <div class="panel panel-default">
     <div class="panel-heading">PreProcesses
     </div>
@@ -169,7 +172,7 @@
             </div>
           </div>
       </div>
-        <div class="form-group">
+        <div class="form-group advanced collapse in">
           <h4 class="col-sm-offset-1">Release (optional)</h4>
           <label for="release_file" class="col-sm-2 control-label">Release file</label>
           <div class="col-sm-10">
@@ -199,7 +202,7 @@
             <input ng-model="config['release.remote.dir']" id="release_remote_dir" class="form-control" placeholder="Path where release info is">
           </div>
         </div>
-        <div class="form-group">
+        <div class="form-group advanced collapse in">
           <h4 class="col-sm-offset-1">Options</h4>
           <label for="files_num_threads" class="col-sm-2 control-label">Number of threads</label>
           <div class="col-sm-10">
@@ -263,7 +266,7 @@
   </div>
 </div>
 
-<div class="row">
+<div class="row advanced collapse in">
   <div class="panel panel-default">
     <div class="panel-heading">Deployment</div>
       <div class="panel-body">
@@ -278,7 +281,7 @@
   </div>
 </div>
 
-<div class="row">
+<div class="row advanced collapse in">
   <div class="panel panel-default">
     <div class="panel-heading">Remove Processes
     </div>
