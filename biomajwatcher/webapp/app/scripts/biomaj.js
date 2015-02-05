@@ -257,10 +257,14 @@ angular.module('biomaj').controller('bankEditCtrl',
       }
       Bank.config({name: $routeParams.name}).$promise.then(function(data) {
         $scope.config = data;
+      },function(reason){
+        // Does not exists or new one
+        $scope.config = {};
       });
 
       $scope.save_config = function() {
-        Bank.saveconfig({name: $routeParams.name},$scope.config).$promise.then(function(data) {
+
+        Bank.saveconfig({name: $scope.config['db.name']},$scope.config).$promise.then(function(data) {
           alert(data.msg);
         });
       };
@@ -601,7 +605,14 @@ angular.module('biomaj').controller('bankReleaseCtrl',
     });
 
 angular.module('biomaj').controller('banksCtrl',
-    function ($scope, $log, Bank) {
+    function ($scope, $log, Bank, Auth) {
+
+      if(Auth.isConnected()) {
+        $scope.user = Auth.getUser();
+      }
+      else {
+        $scope.user = null;
+      }
 
       Bank.list().$promise.then(function(banks) {
         for(var i=0;i<banks.length;i++) {

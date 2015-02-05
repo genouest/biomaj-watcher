@@ -10,6 +10,8 @@ from bson import json_util
 from bson.objectid import ObjectId
 from bson.errors import InvalidId
 import bcrypt
+import ConfigParser
+import copy
 
 from crontab import CronTab
 
@@ -395,7 +397,7 @@ def set_metas(props, metas):
   for meta in metas:
       meta_names.append(meta['name'])
       proc_names = set_procs(props, meta['procs'])
-      props[meta['name']] = ','.join(meta_names)
+      props[meta['name']] = ','.join(proc_names)
   return meta_names
 
 
@@ -404,54 +406,70 @@ def set_blocks(props, blocks):
     for block in blocks:
         block_name.append(block['name'])
         meta_names = set_metas(props, block['metas'])
-        props[block['name']] = ','.join(meta_names)
-    return block_names
+        props[block['name']+".db.post.process"] = ','.join(meta_names)
+    return block_name
 
 @view_config(route_name='bankconfig', renderer='json', request_method='POST')
 def update_bank_config(request):
+  name = request.matchdict['id']
   props = json.loads(request.body)
+  newprops = copy.deepcopy(props)
 
-  bank = Bank(request.matchdict['id'], no_log=True)
-  if not can_edit_bank(request, bank.bank):
+  del newprops['db.post.process']
+  for key,value in props.iteritems():
+    if key == 'no.extract':
+      if props['no.extract']:
+        newprops['no.extract'] = 'true'
+      else:
+        newprops['no.extract'] = 'false'
+    elif 'depends' in props and props['depends']:
+      depnames = []
+      for dep in props['depends']:
+        depnames.append(dep['name'])
+        newprops[dep['name']+'.files.move'] = dep['files.move']
+      newprops['depends'] = ','.join(depnames)
+    elif 'multi' in props and props['multi']:
+      count = 0
+      for m in props['multi']:
+        newprops['remote.file.'+str(count)+'name'] = m['name']
+        newprops['remote.file.'+str(count)+'method'] = m['method']
+        newprops['remote.file.'+str(count)+'protocol'] = m['protocol']
+        newprops['remote.file.'+str(count)+'server'] = m['server']
+        newprops['remote.file.'+str(count)+'path'] = m['path']
+        newprops['remote.file.'+str(count)+'credentials'] = m['credentials']
+        count += 1
+      del newprops['multi']
+    elif 'db.pre.process' in props and props['db.pre.process']:
+        metas = set_metas(newprops, props['db.pre.process'])
+        newprops['db.pre.process'] = ','.join(metas)
+    elif 'db.remove.process' in props and props['db.remove.process']:
+        metas = set_metas(newprops, props['db.remove.process'])
+        newprops['db.remove.process'] = ','.join(metas)
+    elif 'blocks' in props and props['blocks']:
+        blocks = set_blocks(newprops, props['blocks'])
+        newprops['blocks'] = ','.join(blocks)
+
+  bank = None
+  try:
+    config = BiomajConfig(name, options)
+  except Exception:
+    # config does not exists, create it
+    conf_dir = BiomajConfig.global_config.get('GENERAL', 'conf.dir')
+    config_bank = ConfigParser.SafeConfigParser()
+    config_bank.add_section('GENERAL')
+    for key,value in newprops.iteritems():
+      config_bank.set('GENERAL',key,value)
+    config_bank_file = open(os.path.join(conf_dir,name+".properties"),'w')
+    config_bank.write(config_bank_file)
+    config_bank_file.close()
+  finally:
+    bank = Bank(name, no_log=True)
+    test = bank.config.check()
+    if not test:
+      return {'msg': 'invalid configuration'}
+  if bank is None or not can_edit_bank(request, bank.bank):
     return HTTPForbidden('Not authorized to access this resource')
 
-  configparser = bank.config.config_bank
-  if key == 'no.extract':
-    if props['no.extract']:
-      props['no.extract'] = 'true'
-    else:
-      props['no.extract'] = 'false'
-  if 'depends' in props and props['depends']:
-    depnames = []
-    for dep in props['depends']:
-      depnames.append(dep['name'])
-      props[dep['name']+'.files.move'] = dep['files.move']
-    props['depends'] = ','.join(depnames)
-  if 'multi' in props and props['multi']:
-    count = 0
-    for m in props['multi']:
-      props['remote.file.'+str(count)+'name'] = m['name']
-      props['remote.file.'+str(count)+'method'] = m['method']
-      props['remote.file.'+str(count)+'protocol'] = m['protocol']
-      props['remote.file.'+str(count)+'server'] = m['server']
-      props['remote.file.'+str(count)+'path'] = m['path']
-      props['remote.file.'+str(count)+'credentials'] = m['credentials']
-      count += 1
-    del props['multi']
-  if 'db.pre.process' in props and props['db.pre.process']:
-      metas = set_metas(props, props['db.pre.process'])
-      props['db.pre.process'] = ','.join(metas)
-  if 'db.remove.process' in props and props['db.remove.process']:
-      metas = set_metas(props, props['db.remove.process'])
-      props['db.remove.process'] = ','.join(metas)
-  if 'blocks' in props and props['blocks']:
-      blocks = set_blocks(props, props['blocks'])
-      props['blocks'] = ','.join(blocks)
-
-  # loop over key/values and update configparser, then write to file
-
-
-  print str(props)
   return {'msg': 'bank created/updated'}
 
 
