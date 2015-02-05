@@ -273,10 +273,11 @@ def get_block(configparser, block):
   blocks = [x.strip() for x in block.split(',')]
   res = []
   for block in blocks:
-    res.append({
-      'name': block,
-      'metas': get_metas(configparser,configparser.get('GENERAL',block+'.db.post.process') )
-    })
+    if block:
+      res.append({
+        'name': block,
+        'metas': get_metas(configparser,configparser.get('GENERAL',block+'.db.post.process') )
+      })
   return res
 
 
@@ -395,18 +396,20 @@ def set_procs(props, procs):
 def set_metas(props, metas):
   meta_names = []
   for meta in metas:
-      meta_names.append(meta['name'])
-      proc_names = set_procs(props, meta['procs'])
-      props[meta['name']] = ','.join(proc_names)
+      if meta['procs']:
+        meta_names.append(meta['name'])
+        proc_names = set_procs(props, meta['procs'])
+        props[meta['name']] = ','.join(proc_names)
   return meta_names
 
 
 def set_blocks(props, blocks):
     block_name = []
     for block in blocks:
-        block_name.append(block['name'])
-        meta_names = set_metas(props, block['metas'])
-        props[block['name']+".db.post.process"] = ','.join(meta_names)
+        if block['metas']:
+          block_name.append(block['name'])
+          meta_names = set_metas(props, block['metas'])
+          props[block['name']+".db.post.process"] = ','.join(meta_names)
     return block_name
 
 @view_config(route_name='bankconfig', renderer='json', request_method='POST')
@@ -415,7 +418,9 @@ def update_bank_config(request):
   props = json.loads(request.body)
   newprops = copy.deepcopy(props)
 
-  del newprops['db.post.process']
+  if 'db.post.process' in newprops:
+    del newprops['db.post.process']
+
   for key,value in props.iteritems():
     if key == 'no.extract':
       if props['no.extract']:
