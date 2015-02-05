@@ -374,6 +374,39 @@ def bank_config(request):
       config[item] = configparser.get('GENERAL', item)
   return config
 
+def set_procs(props, procs):
+  proc_names = []
+  for proc in procs:
+      proc_names.append(proc['name'])
+      props[proc['name']+'.name'] =  proc['name']
+      props[proc['name']+'.desc'] =  proc['desc']
+      props[proc['name']+'.cluster'] =  proc['cluster']
+      props[proc['name']+'.native'] =  proc['native']
+      props[proc['name']+'.docker'] =  proc['docker']
+      props[proc['name']+'.exe'] =  proc['exe']
+      props[proc['name']+'.args'] =  proc['args']
+      props[proc['name']+'.format'] =  proc['format']
+      props[proc['name']+'.types'] =  proc['types']
+      props[proc['name']+'.files'] =  ','.join(proc['files'])
+  return proc_names
+
+def set_metas(props, metas):
+  meta_names = []
+  for meta in metas:
+      meta_names.append(meta['name'])
+      proc_names = set_procs(props, meta['procs'])
+      props[meta['name']] = ','.join(meta_names)
+  return meta_names
+
+
+def set_blocks(props, blocks):
+    block_name = []
+    for block in blocks:
+        block_name.append(block['name'])
+        meta_names = set_metas(props, block['metas'])
+        props[block['name']] = ','.join(meta_names)
+    return block_names
+
 @view_config(route_name='bankconfig', renderer='json', request_method='POST')
 def update_bank_config(request):
   props = json.loads(request.body)
@@ -404,8 +437,16 @@ def update_bank_config(request):
       props['remote.file.'+str(count)+'path'] = m['path']
       props['remote.file.'+str(count)+'credentials'] = m['credentials']
       count += 1
-  del props['multi']
-
+    del props['multi']
+  if 'db.pre.process' in props and props['db.pre.process']:
+      metas = set_metas(props, props['db.pre.process'])
+      props['db.pre.process'] = ','.join(metas)
+  if 'db.remove.process' in props and props['db.remove.process']:
+      metas = set_metas(props, props['db.remove.process'])
+      props['db.remove.process'] = ','.join(metas)
+  if 'blocks' in props and props['blocks']:
+      blocks = set_blocks(props, props['blocks'])
+      props['blocks'] = ','.join(blocks)
 
   # loop over key/values and update configparser, then write to file
 
