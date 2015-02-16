@@ -1,6 +1,6 @@
 # biomaj-watcher
 
-Web interface for biomaj (https://github.com/osallou/biomaj) 
+Web interface for biomaj (https://github.com/genouest/biomaj) 
 
 # License
 
