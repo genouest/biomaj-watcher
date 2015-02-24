@@ -9,7 +9,7 @@ with open(os.path.join(here, 'CHANGES.txt')) as f:
     CHANGES = f.read()
 
 requires = [
-    'pyramid',
+    'pyramid==1.5.1',
     'pyramid_chameleon',
     'pyramid_debugtoolbar',
     'waitress',
@@ -20,11 +20,11 @@ requires = [
     'gevent',
     'Celery==3.0.23',
     'celery-with-mongodb',
-    'pyramid_celery',
-    'python-crontab'
+    'pyramid_celery==1.3',
+    'python-crontab==1.9.2'
     ]
 
-setup(name='biomaj-watcher',
+setup(name='biomajwatcher',
       version='3.0.1',
       description='biomaj-watcher',
       long_description=README + '\n\n' + CHANGES,
