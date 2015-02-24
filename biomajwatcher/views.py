@@ -643,6 +643,11 @@ def old_api(request):
       _bank['current'] = None
     bres = { "name": _bank['name'], "session_date": _bank['current'], "releases": []}
     current_release = None
+
+    # Very specific use case encountered after a migration
+    if bank.config.get('dir.version') is None:
+       continue
+
     for prod in _bank['production']:
       if _bank['current'] and prod['session'] == _bank['current']:
         current_release = prod['release']
