@@ -564,3 +564,114 @@ def session_log(request):
                                 request=request,
                                 content_type='text/plain')
     return response
+
+
+@view_config(route_name='old_api', request_method='GET', renderer='json')
+def old_api(request):
+  types = []
+  try:
+    types = request.params.get('types')
+    if types is None:
+      types = []
+    else:
+      types = types.split('|')
+  except Exception:
+    types = []
+  formats = []
+  try:
+    formats = request.params.get('formats')
+    if formats is None:
+      formats = []
+    else:
+      formats = formats.split('|')
+  except Exception:
+    formats= []
+
+  bank = None
+  try:
+    bank = request.params.get('banks')
+  except Exception:
+    bank = None
+
+  lightmode = False
+  try:
+    lightmode = request.params.get('lightmode')
+    if lightmode is None:
+      lightmode = False
+    else:
+      lightmode = True
+  except Exception:
+    lightmode = False
+
+  if bank is None or bank == 'all':
+    # Get all banks with format/type
+    _banks = Bank.search(formats, types, False)
+    banks = []
+    for _b in _banks:
+      banks.append(Bank(_b['name'], no_log=True))
+  else:
+    # Get bank
+    banks = [Bank(bank, no_log=True)]
+
+  if bank is None:
+    types = []
+    formats = []
+    for bank in banks:
+      _bank = bank.bank
+      if 'current' not in _bank:
+        _bank['current'] = None
+      if _bank['current']:
+        for prod in _bank['production']:
+          if prod['session'] == _bank['current']:
+            for f in prod['formats']:
+              if f not in formats:
+                formats.append({"value": f})
+            for t in prod['types']:
+              if t not in types:
+                types.append({"value": t})
+            break
+    if types:
+      return {"types": types}
+    if formats:
+      return {"formats": formats}
+
+  # Else return bank(s)
+  res = { "banks": []}
+  for bank in banks:
+    _bank = bank.bank
+    if 'current' not in _bank:
+      _bank['current'] = None
+    bres = { "name": _bank['name'], "session_date": _bank['current'], "releases": []}
+    current_release = None
+    for prod in _bank['production']:
+      if _bank['current'] and prod['session'] == _bank['current']:
+        current_release = prod['release']
+      formats = []
+      types = []
+      release_dir = os.path.join(bank.config.get('data.dir'),
+                        bank.config.get('dir.version'),
+                        prod['prod_dir'])
+      for f in prod['formats']:
+        if lightmode:
+          formats.append({"value": f})
+        else:
+          if os.path.exists(os.path.join(release_dir,'listingv1.'+f)):
+            flisting = open(os.path.join(release_dir,'listingv1.'+f),'r')
+            data = flisting.read()
+            section = json.loads(data)
+            section['value'] = section['name']
+            flisting.close()
+            formats.append(section)
+          else:
+            formats.append({"value": f})
+      for t in prod['types']:
+        types.append({"value": t})
+
+      rel = { prod['release']: { 'path': release_dir, 'formats': formats, 'db_type': types}}
+      bres['releases'].append(rel)
+    bres['current_release'] = current_release
+
+
+    res['banks'].append(bres)
+
+  return res

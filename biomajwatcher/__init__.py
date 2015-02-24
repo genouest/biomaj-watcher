@@ -76,6 +76,8 @@ def main(global_config, **settings):
     config.add_route('auth', '/auth/{id}')
     config.add_route('logout', '/logout')
 
+    config.add_route('old_api', 'BmajWatcher/GET')
+
     config.scan()
 
 
