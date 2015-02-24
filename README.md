@@ -64,6 +64,12 @@ One can use flower to monitor celery.
 
 python db/seed.py --config production.ini --user yyy --pwd xxxx
 
+# API / REST interface
+
+The old API interface (/BmajWatcher/GET) is still available. A new REST
+interface is available but we kept the old one for compatibility for other
+tools. The old interface does not take advantage of the new features however.
+
 
 # Credits
 
