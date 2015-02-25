@@ -653,8 +653,8 @@ def old_api(request):
         current_release = prod['release']
       formats = []
       types = []
-      release_dir = os.path.join(bank.config.get('data.dir'),
-                        bank.config.get('dir.version'),
+      release_dir = os.path.join(prod['data_dir'],
+                        prod['dir_version'],
                         prod['prod_dir'])
       for f in prod['formats']:
         if lightmode:
