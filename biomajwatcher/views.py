@@ -12,6 +12,8 @@ from bson.errors import InvalidId
 import bcrypt
 import ConfigParser
 import copy
+import md5
+import datetime
 
 from crontab import CronTab
 
@@ -565,6 +567,12 @@ def session_log(request):
                                 content_type='text/plain')
     return response
 
+def save_cache(use_cache, cache_file, content):
+  if use_cache:
+    return
+  f = open(cache_file,'w')
+  f.write(json.dumps(content))
+  f.close()
 
 @view_config(route_name='old_api', request_method='GET', renderer='json')
 def old_api(request):
@@ -603,6 +611,33 @@ def old_api(request):
   except Exception:
     lightmode = False
 
+  use_cache = False
+  cache_dir = BiomajConfig.global_config.get('GENERAL', 'cache.dir')
+  query = bank+str('_'.join(types))+str('_'.join(formats))+str(lightmode)
+  md5query = md5.new(query).hexdigest()
+  if not os.path.exists(os.path.join(cache_dir,md5query)):
+    # save cache
+    use_cache = False
+  else:
+    # load from cache if not too old else save
+    t = os.path.getmtime(os.path.join(cache_dir,md5query))
+    cache_last_modified =  datetime.datetime.fromtimestamp(t)
+    now = datetime.datetime.now()
+    diff = now - cache_last_modified
+    if diff.days > 1:
+      # save cache
+      use_cache = False
+    else:
+      # load from cache
+      use_cache = True
+
+  if use_cache:
+    flisting = open(os.path.join(cache_dir,md5query),'r')
+    data = flisting.read()
+    section = json.loads(data)
+    flisting.close()
+    return section
+
   if bank is None or bank == 'all':
     # Get all banks with format/type
     _banks = Bank.search(formats, types, False)
@@ -631,9 +666,12 @@ def old_api(request):
                 types.append({"value": t})
             break
     if types:
+      save_cache(use_cache, os.path.join(cache_dir,md5query), {"types": types}) 
       return {"types": types}
     if formats:
+      save_cache(use_cache, os.path.join(cache_dir,md5query), {"formats": types})
       return {"formats": formats}
+
 
   # Else return bank(s)
   res = { "banks": []}
@@ -678,5 +716,6 @@ def old_api(request):
 
 
     res['banks'].append(bres)
-
+  
+  save_cache(use_cache, os.path.join(cache_dir,md5query), res)
   return res
