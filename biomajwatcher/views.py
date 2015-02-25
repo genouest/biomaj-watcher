@@ -12,7 +12,7 @@ from bson.errors import InvalidId
 import bcrypt
 import ConfigParser
 import copy
-import md5
+import hashlib
 import datetime
 
 from crontab import CronTab
@@ -614,7 +614,7 @@ def old_api(request):
   use_cache = False
   cache_dir = BiomajConfig.global_config.get('GENERAL', 'cache.dir')
   query = bank+str('_'.join(types))+str('_'.join(formats))+str(lightmode)
-  md5query = md5.new(query).hexdigest()
+  md5query = hashlib.md5.new(query).hexdigest()
   if not os.path.exists(os.path.join(cache_dir,md5query)):
     # save cache
     use_cache = False
