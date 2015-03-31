@@ -595,6 +595,8 @@ def old_api(request):
   except Exception:
     formats= []
 
+  requested_formats = list(formats)
+
   bank = None
   try:
     bank = request.params.get('banks')
@@ -679,7 +681,7 @@ def old_api(request):
     _bank = bank.bank
     if 'current' not in _bank:
       _bank['current'] = None
-    bres = { "name": _bank['name'], "session_date": _bank['current'], "releases": []}
+    bres = { "name": _bank['name'], "session_date": _bank['current'], "releases": [], "db_type": ','.join(_bank['properties']['type'])}
     current_release = None
 
     # Very specific use case encountered after a migration
@@ -695,6 +697,9 @@ def old_api(request):
                         prod['dir_version'],
                         prod['prod_dir'])
       for f in prod['formats']:
+        if requested_formats and f not in requested_formats:
+          continue
+
         if lightmode:
           formats.append({"value": f})
         else:
@@ -710,12 +715,14 @@ def old_api(request):
       for t in prod['types']:
         types.append({"value": t})
 
-      rel = { prod['release']: { 'path': release_dir, 'formats': formats, 'db_type': types}}
-      bres['releases'].append(rel)
+      if formats:
+        bres['releases'][prod['release']] = { 'path': release_dir, 'formats': formats, 'db_type': types}
+      #rel = { prod['release']: { 'path': release_dir, 'formats': formats, 'db_type': types}}
+      #bres['releases'].append(rel)
     bres['current_release'] = current_release
 
-
-    res['banks'].append(bres)
+    if bres['releases']:
+      res['banks'].append(bres)
 
   save_cache(use_cache, os.path.join(cache_dir,md5query), res)
   return res
