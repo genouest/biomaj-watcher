@@ -614,7 +614,7 @@ def old_api(request):
   use_cache = False
   cache_dir = BiomajConfig.global_config.get('GENERAL', 'cache.dir')
   query = bank+str('_'.join(types))+str('_'.join(formats))+str(lightmode)
-  md5query = hashlib.md5.new(query).hexdigest()
+  md5query = hashlib.md5(query).hexdigest()
   if not os.path.exists(os.path.join(cache_dir,md5query)):
     # save cache
     use_cache = False
@@ -666,7 +666,7 @@ def old_api(request):
                 types.append({"value": t})
             break
     if types:
-      save_cache(use_cache, os.path.join(cache_dir,md5query), {"types": types}) 
+      save_cache(use_cache, os.path.join(cache_dir,md5query), {"types": types})
       return {"types": types}
     if formats:
       save_cache(use_cache, os.path.join(cache_dir,md5query), {"formats": types})
@@ -716,6 +716,6 @@ def old_api(request):
 
 
     res['banks'].append(bres)
-  
+
   save_cache(use_cache, os.path.join(cache_dir,md5query), res)
   return res
