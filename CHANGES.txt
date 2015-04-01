@@ -1,4 +1,11 @@
-0.0
+3.0.2
+-----
+
+- Fix old API BmajWatcher compatibility
+
+
+3.0
 ---
 
 -  Initial version
+
