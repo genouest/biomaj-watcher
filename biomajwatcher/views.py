@@ -710,8 +710,8 @@ def old_api(request):
             section['value'] = section['name']
             flisting.close()
             formats.append(section)
-          else:
-            formats.append({"value": f})
+          #else:
+          #  formats.append({"value": f})
       for t in prod['types']:
         types.append({"value": t})
 
