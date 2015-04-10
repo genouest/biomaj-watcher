@@ -554,7 +554,7 @@ def session_log(request):
     return HTTPForbidden('Not authorized to access this resource')
   log_file = None
   last_update = bank.bank['last_update_session']
-  log_file = bank._bank['status']['log_file']['status']
+  log_file = bank.bank['status']['log_file']['status']
   if log_file is None:
     for session in bank.bank['sessions']:
       if session['id'] == float(request.matchdict['session']):
