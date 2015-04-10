@@ -554,11 +554,12 @@ def session_log(request):
     return HTTPForbidden('Not authorized to access this resource')
   log_file = None
   last_update = bank.bank['last_update_session']
-
-  for session in bank.bank['sessions']:
-    if session['id'] == float(request.matchdict['session']):
-      log_file = session['log_file']
-      break
+  log_file = bank._bank['status']['log_file']['status']
+  if log_file is None:
+    for session in bank.bank['sessions']:
+      if session['id'] == float(request.matchdict['session']):
+        log_file = session['log_file']
+        break
   if log_file is None or not os.path.exists(log_file):
     return HTTPNotFound('No matching log file found')
   else:
