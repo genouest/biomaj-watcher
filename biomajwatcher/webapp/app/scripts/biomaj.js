@@ -98,6 +98,7 @@ angular.module('biomaj').controller('scheduleCtrl',
           $scope.msg = 'Task must contain at least one bank';
           return;
         }
+        if(c['oldcomment'] == undefined) { c['oldcomment'] = c['comment']; }
         Schedule.update({'name': c['oldcomment']},
                         { 'comment': c['comment'],
                           'slices': c['slices'],
