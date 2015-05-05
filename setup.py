@@ -21,7 +21,8 @@ requires = [
     'Celery==3.0.23',
     'celery-with-mongodb',
     'pyramid_celery==1.3',
-    'python-crontab==1.9.2'
+    'python-crontab==1.9.2',
+    'future'
     ]
 
 setup(name='biomajwatcher',
@@ -31,6 +32,8 @@ setup(name='biomajwatcher',
       classifiers=[
         "Programming Language :: Python",
         "Framework :: Pyramid",
+        "Programming Language :: Python :: 2",
+        "Programming Language :: Python :: 2.7",
         "Topic :: Internet :: WWW/HTTP",
         "Topic :: Internet :: WWW/HTTP :: WSGI :: Application",
         ],
