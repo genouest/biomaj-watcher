@@ -21,4 +21,4 @@ pyramid-debugtoolbar==2.2
 pyramid-mako==1.0.2
 python-crontab==1.9.2
 python-dateutil==2.3
-python-ldap==2.4.18
+ldap3

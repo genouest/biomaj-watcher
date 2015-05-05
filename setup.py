@@ -15,7 +15,7 @@ requires = [
     'waitress',
     'pymongo',
     'py-bcrypt',
-    'python-ldap',
+    'ldap3',
     'gunicorn',
     'gevent',
     'Celery==3.0.23',
