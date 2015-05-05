@@ -92,6 +92,8 @@ def getschedule(request):
 
 @view_config(route_name='updateschedulebank', renderer='json', request_method='DELETE')
 def unsetschedule(request):
+  if not is_admin(request):
+      return HTTPForbidden()
   cron_name = request.matchdict['name']
   cron  = CronTab(user=True)
   cron.remove_all(comment=cron_name)
@@ -100,6 +102,8 @@ def unsetschedule(request):
 
 @view_config(route_name='updateschedulebank', renderer='json', request_method='POST')
 def setschedule(request):
+  if not is_admin(request):
+        return HTTPForbidden()
   jobs = []
   cron_oldname = request.matchdict['name']
   cron = json.loads(request.body)
