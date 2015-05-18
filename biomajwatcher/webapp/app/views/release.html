@@ -13,7 +13,7 @@
         </button></div>
       </div>
       <div>Types: <ul ng-repeat="f in production.types"><li>{{f}}</li></ul></div>
-      <div>Directory: {{production.data_dir}}/{{production.prod_dir}}</div>
+      <div>Directory: {{production.data_dir}/{{production.dir_version}}}/{{production.prod_dir}}</div>
       <div>Log file: <a ng-href="#/bank/{{name}}/log/{{session.id}}">{{session.log_file}}</a></div>
     </div>
   </div>
