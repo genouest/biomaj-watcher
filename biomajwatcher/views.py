@@ -715,13 +715,15 @@ def old_api(request):
             section['value'] = section['name']
             flisting.close()
             formats.append(section)
+          else:
+            formats.append({"files": [], "name": f})
           #else:
           #  formats.append({"value": f})
       for t in prod['types']:
         types.append({"value": t})
 
-      if formats:
-        bres['releases'][prod['release']] = { 'path': release_dir, 'formats': formats, 'db_type': types}
+      #if formats:
+      bres['releases'][prod['release']] = { 'path': release_dir, 'formats': formats, 'db_type': types}
       #rel = { prod['release']: { 'path': release_dir, 'formats': formats, 'db_type': types}}
       #bres['releases'].append(rel)
     bres['current_release'] = current_release
