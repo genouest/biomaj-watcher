@@ -78,7 +78,18 @@ If you want to customize the theme, create a new theme CSS file (with an other n
 
 In index.html you can also add your logol, chnage header etc...
 
+# REST API
 
+    /bank  : list of banks
+    /bank/:id : details of bank
+    /bank/:id/status: current status of the bank
+    /bank/:id/config: properties of the bank
+    /bank/:id/log/:sessionid : log file of the session
+    /search: search in banks with GET parameter "q=query", query follows Lucene syntax
+    /search/format/:format: get banks having format
+    /search/type/:type: get banks having type
+    /search/format/:format/type/:type : get banks having format and type
+    /stat : get banks disk usage
 
 # Credits
 
