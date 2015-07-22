@@ -62,7 +62,7 @@ One can use flower to monitor celery.
 
 # User creation
 
-python db/seed.py --config production.ini --user yyy --pwd xxxx
+python db/seed.py --config global.properties --user yyy --pwd xxxx
 
 # API / REST interface
 
