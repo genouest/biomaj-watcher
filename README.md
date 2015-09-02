@@ -37,6 +37,10 @@ Configuration is done in development.ini or production.ini
     BROKER_URL = mongodb://localhost/biomaj_celery
 
 
+# Install
+
+    python setup.py develop
+
 # Running
 
 ## Development
