@@ -396,6 +396,8 @@ def set_procs(props, procs):
       props[proc['name']+'.args'] =  proc['args']
       props[proc['name']+'.format'] =  proc['format']
       props[proc['name']+'.types'] =  proc['types']
+      if proc['files'] is None:
+          proc['files'] = ''
       props[proc['name']+'.files'] =  ','.join(proc['files'])
   return proc_names
 
@@ -469,6 +471,8 @@ def update_bank_config(request):
     config_bank = ConfigParser.SafeConfigParser()
     config_bank.add_section('GENERAL')
     for key,value in newprops.iteritems():
+      if value is None:
+        value = ""
       config_bank.set('GENERAL',key,value)
     config_bank_file = open(os.path.join(conf_dir,name+".properties"),'w')
     config_bank.write(config_bank_file)
