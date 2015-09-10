@@ -1,3 +1,9 @@
+3.0.6
+-----
+- Fix schedule access
+- Fix some bank creation/update issues with null parameters
+- Fix display issue in release page
+
 3.0.5
 -----
 

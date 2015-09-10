@@ -295,10 +295,11 @@ def get_metas(configparser, metas):
   meta_procs = [x.strip() for x in metas.split(',')]
   res = []
   for meta in meta_procs:
-    res.append({
-     'name': meta,
-     'procs': get_procs(configparser, configparser.get('GENERAL',meta))
-  })
+    if meta:
+        res.append({
+            'name': meta,
+            'procs': get_procs(configparser, configparser.get('GENERAL',meta))
+        })
   return res
 
 def get_option(configparser, option):
@@ -332,6 +333,8 @@ def get_procs(configparser, proc):
 
 @view_config(route_name='bankconfig', renderer='json', request_method='GET')
 def bank_config(request):
+  if request.matchdict['id'] == 'new':
+      return HTTPNotFound()
   bank = Bank(request.matchdict['id'], no_log=True)
   if not can_edit_bank(request, bank.bank):
     return HTTPForbidden('Not authorized to access this resource')
