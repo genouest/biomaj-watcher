@@ -42,27 +42,27 @@
             </div>
             <div class="navbar-collapse collapse" ng-controller="UserCtrl">
                 <ul class="nav navbar-nav">
-                    <li>
-                        <a href="#/bank" active-link="active">
+                    <li ng-class="bank">
+                        <a id='bank' class="header-label" ng-click="toggleShaded('bank')" href="#/bank" active-link="active">
                             <i class="glyphicon glyphicon-wrench"></i>
                             Banks
                         </a>
                     </li>
-                    <li>
-                        <a href="#/stat">
+                    <li ng-class="stat">
+                        <a id='stat' class="header-label" ng-click="toggleShaded('stat')" href="#/stat">
                             <i class="glyphicon glyphicon-signal"></i>
                             Stats
                         </a>
                     </li>
-                    <li ng-if="is_logged">
-                        <a href="#/schedule">
+                    <li ng-if="is_logged" ng-class="schedule">
+                        <a id="schedule" class="header-label" ng-click="toggleShaded('schedule')" href="#/schedule">
                             <i class="glyphicon glyphicon-time"></i>
                             Schedule
                         </a>
                     </li>
 
-                    <li>
-                        <a href="#/welcome">
+                    <li ng-class="welcome">
+                        <a id="welcome" class="header-label" ng-click="toggleShaded('welcome')" href="#/welcome">
                             <i class="glyphicon glyphicon-question-sign"></i>
                             About
                         </a>

@@ -64,13 +64,37 @@ angular.module('biomaj').controller('WelcomeCtrl',
     function () {});
 
 
-angular.module('biomaj').controller('biomajCtrl',
-    function ($rootScope) {
+angular.module('biomaj').controller('biomajCtrl', ['$scope', '$rootScope', '$location',
+    function ($scope, $rootScope, $location) {
         $rootScope.alerts = [];
+        $rootScope.elements = [];
         $rootScope.closeAlert = function (index) {
             $rootScope.alerts.splice(index, 1);
         };
-    });
+        $rootScope.toggleShaded = function(elementId){
+
+            $scope.elements = document.getElementsByClassName("header-label");
+            var len = $scope.elements.length;
+
+            for (var i = 0; i<len; i++){
+              if($scope.elements[i].getAttribute("id") == elementId){
+                $scope.elements[i].style.backgroundColor = '#ffffff';
+                $scope.elements[i].style.color = '#000000';
+              }
+              else{
+                $scope.elements[i].style.backgroundColor = '#222222';
+                $scope.elements[i].style.color = '#999999';
+              }
+            }
+
+            if ($location.path() == '/bank'){
+
+
+            } else {
+
+            }
+        };
+    }]);
 
 angular.module('biomaj').controller('scheduleCtrl',
     function ($scope, $rootScope, $routeParams, $log, $location, Bank, User, Auth, Schedule) {
