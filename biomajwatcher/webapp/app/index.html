@@ -42,34 +42,34 @@
             </div>
             <div class="navbar-collapse collapse" ng-controller="UserCtrl">
                 <ul class="nav navbar-nav">
-                    <li ng-class="bank">
-                        <a id='bank' class="header-label" ng-click="toggleShaded('bank')" href="#/bank" active-link="active">
+                    <li ng-class="{bank: true, active: isActive('/bank')}">
+                        <a href="#/bank">
                             <i class="glyphicon glyphicon-wrench"></i>
                             Banks
                         </a>
                     </li>
-                    <li ng-class="stat">
-                        <a id='stat' class="header-label" ng-click="toggleShaded('stat')" href="#/stat">
+                    <li ng-class="{stat: true, active: isActive('/stat')}">
+                        <a href="#/stat">
                             <i class="glyphicon glyphicon-signal"></i>
                             Stats
                         </a>
                     </li>
-                    <li ng-if="is_logged" ng-class="schedule">
-                        <a id="schedule" class="header-label" ng-click="toggleShaded('schedule')" href="#/schedule">
+                    <li ng-if="is_logged" ng-class="{schedule: true, active: isActive('/schedule')}">
+                        <a href="#/schedule">
                             <i class="glyphicon glyphicon-time"></i>
                             Schedule
                         </a>
                     </li>
 
-                    <li ng-class="welcome">
-                        <a id="welcome" class="header-label" ng-click="toggleShaded('welcome')" href="#/welcome">
+                    <li ng-class="{welcome: true, active: isActive('/welcome')}">
+                        <a href="#/welcome">
                             <i class="glyphicon glyphicon-question-sign"></i>
                             About
                         </a>
                     </li>
                 </ul>
                 <ul class="nav navbar-nav pull-right">
-                    <li ng-if="! is_logged">
+                    <li ng-if="! is_logged" ng-class="{active: isActive('/login')}">
                         <a href="#/login">
                             <i class="glyphicon glyphicon-user"></i>
                             Login
