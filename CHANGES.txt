@@ -3,6 +3,7 @@
 - Fix schedule access
 - Fix some bank creation/update issues with null parameters
 - Fix display issue in release page
+- Manage "active" tab on main page
 
 3.0.5
 -----
