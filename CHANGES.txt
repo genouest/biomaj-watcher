@@ -1,5 +1,6 @@
 3.0.7
 -----
+- Force owner to the person logged in when editing a bank
 
 3.0.6
 -----

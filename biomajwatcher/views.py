@@ -425,6 +425,11 @@ def set_blocks(props, blocks):
 
 @view_config(route_name='bankconfig', renderer='json', request_method='POST')
 def update_bank_config(request):
+  settings = request.registry.settings
+  user = is_authenticated(request)
+  if user is None:
+      return HTTPForbidden('Not authenticated')
+
   name = request.matchdict['id']
   props = json.loads(request.body)
   newprops = copy.deepcopy(props)
@@ -482,6 +487,8 @@ def update_bank_config(request):
     config_bank_file.close()
   finally:
     bank = Bank(name, no_log=True)
+    # Force owner to user logged in
+    bank.set_owner(user['id'])
     test = bank.config.check()
     if not test:
       return {'msg': 'invalid configuration'}
