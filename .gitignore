@@ -15,12 +15,12 @@ biomajwatcher/webapp/.tmp
 # Distribution / packaging
 .Python
 env/
-build/
+./build/
 develop-eggs/
 ./dist/
 downloads/
 eggs/
-lib/
+./lib/
 lib64/
 parts/
 sdist/
