@@ -28,15 +28,6 @@ Configuration is done in development.ini or production.ini
 
     global_properties = PATH_TO_BIOMAJ_global.properties
     
-    # List of user ids with admin priviledges.
-    # Users need to be create or be ldap users if ldap
-    # is configured in global.properties
-    admin = admin, jdoe
-    
-    # Celery configuration over mongodb, mongodb url
-    BROKER_URL = mongodb://localhost/biomaj_celery
-
-
 # Install
 
     python setup.py develop
@@ -58,15 +49,8 @@ customize web configuration.
 
 # Background processing (Optional)
 
-To allow banks update/removal by authenticated user, Celery is needed. Celery can run on same node, or multiple distant ones to execute bank updates.
+To allow banks update/removal by authenticated user, biomaj-daemon (micro service architecture) must be running
 
-    pceleryd development.ini/production.ini
-
-One can use flower to monitor celery.
-
-# User creation
-
-python db/seed.py --config global.properties --user yyy --pwd xxxx
 
 # API / REST interface
 

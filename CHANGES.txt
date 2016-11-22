@@ -1,3 +1,8 @@
+3.0.8
+-----
+- update to match microservice architecture
+  * Scheduling is not active anymore you should put requests using biomaj-daemon-cli commands in cron manually
+
 3.0.7
 -----
 - Force owner to the person logged in when editing a bank

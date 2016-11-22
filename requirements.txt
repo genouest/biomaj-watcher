@@ -1,6 +1,4 @@
 argparse==1.2.1
-celery==3.0.23
-celery-with-mongodb==3.0
 coverage==3.7.1
 drmaa==0.7.6
 elasticsearch==1.2.0
@@ -15,7 +13,6 @@ py-bcrypt==0.4
 pycurl==7.19.5
 pymongo==3.2
 pyramid==1.5.1
-pyramid-celery==1.3
 pyramid-chameleon==0.3
 pyramid-debugtoolbar==2.2
 pyramid-mako==1.0.2
@@ -23,3 +20,6 @@ python-crontab==1.9.2
 python-dateutil==2.3
 ldap3
 future
+python-consul
+PyYAML
+requests
