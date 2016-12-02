@@ -103,26 +103,41 @@ def ping(request):
 
 @view_config(route_name='schedulebank', renderer='json', request_method='GET')
 def getschedule(request):
-  jobs = []
-  user_cron  = CronTab(user=True)
-  settings = request.registry.settings
-  biomaj_cli = settings['biomaj_cli']
-  for job in user_cron:
-    if job.command.startswith(biomaj_cli):
-      banks = job.command.split('--bank')[1].strip().split(',')
-      jobs.append({'comment': job.comment, 'slices': str(job.slices), 'banks': banks})
-  return jobs
+    jobs = []
+    r = requests.get(request.registry.settings['watcher_config']['web']['local_endpoint'] + '/api/cron/jobs')
+    if not r.status_code == 200:
+        logging.error("Failed to contact cron service")
+        return []
+      '''
+      user_cron  = CronTab(user=True)
+      settings = request.registry.settings
+      biomaj_cli = settings['biomaj_cli']
+      for job in user_cron:
+        if job.command.startswith(biomaj_cli):
+          banks = job.command.split('--bank')[1].strip().split(',')
+          jobs.append({'comment': job.comment, 'slices': str(job.slices), 'banks': banks})
+        return jobs
+      '''
+    cron_jobs = r.json()
+    return cron_jobs['cron']
 
 
 @view_config(route_name='updateschedulebank', renderer='json', request_method='DELETE')
 def unsetschedule(request):
-  if not is_admin(request):
-      return HTTPForbidden()
-  cron_name = request.matchdict['name']
-  cron  = CronTab(user=True)
-  cron.remove_all(comment=cron_name)
-  cron.write()
-  return []
+    if not is_admin(request):
+        return HTTPForbidden()
+    '''
+    cron_name = request.matchdict['name']
+    cron  = CronTab(user=True)
+    cron.remove_all(comment=cron_name)
+    cron.write()
+    return []
+    '''
+    r = requests.delete(request.registry.settings['watcher_config']['web']['local_endpoint'] + '/api/cron/jobs/' + request.matchdict['name'])
+    if not r.status_code == 200:
+        logging.error("Failed to contact cron service")
+    return []
+
 
 
 @view_config(route_name='updateschedulebank', renderer='json', request_method='POST')
@@ -138,6 +153,22 @@ def setschedule(request):
     cron_time = cron['slices']
     cron_banks = cron['banks']
     cron_newname = cron['comment']
+    r = requests.delete(request.registry.settings['watcher_config']['web']['local_endpoint'] + '/api/cron/jobs' + cron_oldname)
+    if not r.status_code == 200:
+        logging.error("Failed to contact cron service")
+        return []
+
+    cron_task = {
+        'slices': cron_time,
+        'banks': cron_banks,
+        'comment': cron_newname
+    }
+    r = requests.post(request.registry.settings['watcher_config']['web']['local_endpoint'] + '/api/cron/jobs' + cron_newname, json=cron_task)
+    if not r.status_code == 200:
+        logging.error("Failed to contact cron service")
+        return []
+    '''
+
     cron  = CronTab(user=True)
     cron.remove_all(comment=cron_oldname)
     settings = request.registry.settings
@@ -148,6 +179,7 @@ def setschedule(request):
     job = cron.new(command=cmd, comment=cron_newname)
     job.setall(cron_time)
     cron.write()
+    '''
     return []
 
 
@@ -671,7 +703,7 @@ def user_list(request):
     if not is_admin(request):
         return HTTPForbidden('Not authorized to access this resource')
 
-    r = requests.get(config['web']['local_endpoint'] + '/api/user/info/user')
+    r = requests.get(request.registry.settings['watcher_config']['web']['local_endpoint'] + '/api/user/info/user')
     if not r.status_code == 200:
         return HTTPNotFound()
     users = r.json()['users']
