@@ -129,7 +129,7 @@ def setschedule(request):
     cron_time = cron['slices']
     cron_banks = cron['banks']
     cron_newname = cron['comment']
-    r = requests.delete(request.registry.settings['watcher_config']['web']['local_endpoint'] + '/api/cron/jobs' + cron_oldname)
+    r = requests.delete(request.registry.settings['watcher_config']['web']['local_endpoint'] + '/api/cron/jobs/' + cron_oldname)
     if not r.status_code == 200:
         logging.error("Failed to contact cron service")
         return []
@@ -139,7 +139,7 @@ def setschedule(request):
         'banks': cron_banks,
         'comment': cron_newname
     }
-    r = requests.post(request.registry.settings['watcher_config']['web']['local_endpoint'] + '/api/cron/jobs' + cron_newname, json=cron_task)
+    r = requests.post(request.registry.settings['watcher_config']['web']['local_endpoint'] + '/api/cron/jobs/' + cron_newname, json=cron_task)
     if not r.status_code == 200:
         logging.error("Failed to contact cron service")
         return []
@@ -228,7 +228,7 @@ def is_authenticated(request):
     config = request.registry.settings['watcher_config']
     user_id = request.authenticated_userid
     if user_id:
-        r = requests.get(config['web']['local_endpoint'] + '/api/user/' + user_id)
+        r = requests.get(config['web']['local_endpoint'] + '/api/user/info/user/' + user_id)
         if not r.status_code == 200:
             return None
         user = r.json()['user']
