@@ -13,7 +13,7 @@ requires = [
     'pyramid_chameleon',
     'pyramid_debugtoolbar',
     'waitress',
-    'pymongo==3.2',
+    'pymongo',
     'py-bcrypt',
     'ldap3',
     'gunicorn',

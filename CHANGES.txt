@@ -1,6 +1,7 @@
 3.0.8
 -----
 - update to match microservice architecture
+- change pymongo req
 
 3.0.7
 -----
