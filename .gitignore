@@ -1,3 +1,7 @@
+development.ini
+production.ini
+
+
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
@@ -11,12 +15,12 @@ biomajwatcher/webapp/.tmp
 # Distribution / packaging
 .Python
 env/
-build/
+./build/
 develop-eggs/
-dist/
+./dist/
 downloads/
 eggs/
-lib/
+./lib/
 lib64/
 parts/
 sdist/

@@ -1,0 +1,75 @@
+###
+# app configuration
+# http://docs.pylonsproject.org/projects/pyramid/en/1.5-branch/narr/environment.html
+###
+
+[app:main]
+use = egg:biomajwatcher
+
+pyramid.reload_templates = false
+pyramid.debug_authorization = false
+pyramid.debug_notfound = false
+pyramid.debug_routematch = false
+pyramid.default_locale_name = en
+pyramid.includes =
+
+# path to global.properties file
+global_properties = /var/lib/biomaj/global.properties
+
+# Biomaj cli command to execute for cron tasks, set appropriate path
+# For virtualenv:  . /myvenv/bin/activate && python biomaj-cli.py
+biomaj_cli = python biomaj-cli.py
+
+# List of user ids as admin
+
+###
+# wsgi server configuration
+###
+
+[server:main]
+use = egg:gunicorn#main
+host = 0.0.0.0
+port = 6543
+workers = 2
+worker_class = gevent
+proc_name = bmajwatcher
+
+###
+# logging configuration
+# http://docs.pylonsproject.org/projects/pyramid/en/1.5-branch/narr/logging.html
+###
+
+[loggers]
+keys = root, biomajwatcher
+
+[handlers]
+keys = console,file
+
+[formatters]
+keys = generic
+
+[logger_root]
+level = WARN
+handlers = console
+
+[logger_biomajwatcher]
+level = WARN
+handlers = console,file
+qualname = biomajwatcher
+
+[handler_console]
+class = StreamHandler
+args = (sys.stderr,)
+level = NOTSET
+formatter = generic
+
+[handler_file]
+class = handlers.RotatingFileHandler
+formatter =  generic
+level = INFO
+args = ('/var/log/biomaj/watcher.log', 'a', 100000, 3)
+
+
+[formatter_generic]
+format = %(asctime)s %(levelname)-5.5s [%(name)s][%(threadName)s] %(message)s
+

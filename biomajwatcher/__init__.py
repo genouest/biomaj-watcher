@@ -5,8 +5,8 @@ from pyramid.events import BeforeRender
 from pyramid.authentication import AuthTktAuthenticationPolicy
 from pyramid.authorization import ACLAuthorizationPolicy
 
-
-
+import consul
+import yaml
 import os
 import sys
 import json
@@ -14,22 +14,34 @@ import datetime
 from bson import json_util
 from bson.objectid import ObjectId
 
-from biomaj.config import BiomajConfig
+from biomaj_core.config import BiomajConfig
+from biomaj_core.utils import Utils
 
 
 def main(global_config, **settings):
     """ This function returns a Pyramid WSGI application.
     """
-    #config = Configurator(settings=settings)
-    global_properties = settings.get(
-               'global_properties', '/etc/biomaj/global.properties')
-    if not os.path.exists(global_properties):
-      print 'global.properties configuration field is not set'
-      sys.exit(1)
 
-    BiomajConfig.load_config(global_properties)
+    config_file = 'config.yml'
+    if 'BIOMAJ_CONFIG' in os.environ:
+            config_file = os.environ['BIOMAJ_CONFIG']
 
-    settings['global_properties'] = global_properties
+    config = None
+    with open(config_file, 'r') as ymlfile:
+        config = yaml.load(ymlfile)
+        Utils.service_config_override(config)
+
+    BiomajConfig.load_config(config['biomaj']['config'])
+
+    settings['watcher_config'] = config
+
+    settings['global_properties'] = config['biomaj']['config']
+
+    if config['consul']['host']:
+        consul_agent = consul.Consul(host=config['consul']['host'])
+        consul_agent.agent.service.register('biomaj-watcher', service_id=config['consul']['id'], address=config['web']['hostname'], port=config['web']['port'], tags=['biomaj'])
+        check = consul.Check.http(url='http://' + config['web']['hostname'] + ':' + str(config['web']['port']) + '/api/watcher', interval=20)
+        consul_agent.agent.check.register(config['consul']['id'] + '_check', check=check, service_id=config['consul']['id'])
 
     config = Configurator(settings=settings)
     config.include('pyramid_chameleon')
@@ -43,12 +55,10 @@ def main(global_config, **settings):
     config.set_authentication_policy(authentication_policy)
     config.set_authorization_policy(authorization_policy)
 
-
-
-
     config.add_static_view('static', 'static', cache_max_age=3600)
     config.add_static_view('app', 'biomajwatcher:webapp/app')
     config.add_route('home', '/')
+    config.add_route('ping', '/api/watcher')
 
     config.add_route('user','/user')
     config.add_route('user_banks','/user/{id}/banks')

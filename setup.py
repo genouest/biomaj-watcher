@@ -13,20 +13,20 @@ requires = [
     'pyramid_chameleon',
     'pyramid_debugtoolbar',
     'waitress',
-    'pymongo==3.2',
+    'pymongo',
     'py-bcrypt',
     'ldap3',
     'gunicorn',
     'gevent',
-    'Celery==3.0.23',
-    'celery-with-mongodb',
-    'pyramid_celery==1.3',
     'python-crontab==1.9.2',
-    'future'
+    'future',
+    'python-consul',
+    'PyYAML',
+    'requests'
     ]
 
 setup(name='biomajwatcher',
-      version='3.0.7',
+      version='3.0.8',
       description='biomaj-watcher',
       long_description=README + '\n\n' + CHANGES,
       classifiers=[

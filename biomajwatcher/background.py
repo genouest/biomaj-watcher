@@ -1,7 +1,9 @@
+'''
 from celery import Celery
 from celery.task import task
+'''
 import logging
-
+'''
 from biomaj.config import BiomajConfig
 from biomaj.bank import Bank
 
@@ -44,3 +46,4 @@ def remove(name, release, global_properties='global.properties'):
   bank = Bank(name)
   res = bank.remove(release)
   return 1
+'''
