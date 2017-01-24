@@ -756,6 +756,8 @@ def old_api(request):
       use_cache = False
       cache_dir = BiomajConfig.global_config.get('GENERAL', 'cache.dir')
       query = bank+str('_'.join(types))+str('_'.join(formats))+str(lightmode)
+      if sys.version >= '3':
+          query = query.encode('utf-8')
       md5query = hashlib.md5(query).hexdigest()
       if not os.path.exists(os.path.join(cache_dir,md5query)):
         # save cache
@@ -821,7 +823,7 @@ def old_api(request):
         _bank = bank.bank
         if 'current' not in _bank:
           _bank['current'] = None
-        bres = { "name": _bank['name'], "session_date": _bank['current'], "releases": [], "db_type": ','.join(_bank['properties']['type'])}
+        bres = { "name": _bank['name'], "session_date": _bank['current'], "releases": {}, "db_type": ','.join(_bank['properties']['type'])}
         current_release = None
 
         # Very specific use case encountered after a migration
