@@ -1,6 +1,6 @@
 # biomaj-watcher
 
-Web interface for biomaj (https://github.com/genouest/biomaj) 
+Web interface for biomaj (https://github.com/genouest/biomaj)
 
 # License
 
@@ -27,7 +27,7 @@ in biomajwatcher/webapp
 Configuration is done in development.ini or production.ini
 
     global_properties = PATH_TO_BIOMAJ_global.properties
-    
+
 # Install
 
     python setup.py develop
@@ -47,7 +47,7 @@ Web server will start to listen on port 6543 by default. Update ini files to
 customize web configuration.
 
 
-# Background processing (Optional)
+# Authentication and background processing (Optional)
 
 To allow banks update/removal by authenticated user, biomaj-daemon (micro service architecture) must be running
 
@@ -67,6 +67,18 @@ If you want to customize the theme, create a new theme CSS file (with an other n
 In index.html you can also add your logol, chnage header etc...
 
 # REST API
+
+## >= 3.0.8
+
+    For authenticated access, add in the Authorization header fo the HTTP request  "user_id api_key_value", e.g.  Authorization: myself 1234AZ
+
+    /api/watcher/bank  : list of banks
+    /api/watcher/bank/:id : details of bank
+    /api/watcher/bank/:id/status: current status of the bank
+    /api/watcher/bank/:id/config: properties of the bank
+    /api/watcher/bank/:id/log/:sessionid : log file of the session
+
+## Old API
 
     /bank  : list of banks
     /bank/:id : details of bank

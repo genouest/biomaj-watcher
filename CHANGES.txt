@@ -2,6 +2,7 @@
 -----
 - Fix Old API
 - Add some /api/watcher endpoints and fix log file access
+- Add authorization header for API calls with format: Authorization: userid userapikey
 3.0.8
 -----
 - update to match microservice architecture

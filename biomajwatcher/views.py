@@ -42,9 +42,10 @@ def load_config(request):
         BiomajConfig.load_config(global_properties)
 
 
-def is_admin(request):
+def is_admin(request, user=None):
     # settings = request.registry.settings
-    user = is_authenticated(request)
+    if not user:
+        user = is_authenticated(request)
     is_user_admin = False
     if user:
         admins = BiomajConfig.global_config.get('GENERAL', 'admin')
@@ -197,11 +198,13 @@ def can_read_bank(request, bank):
     '''
     if bank['properties']['visibility'] == 'public':
         return True
-    user_id = request.authenticated_userid
-    if user_id is None:
+
+    user = is_authenticated(request)
+    if user is None:
         return False
+
     # settings = request.registry.settings
-    if is_admin(request) or user_id == bank['properties']['owner']:
+    if is_admin(request, user) or user['id'] == bank['properties']['owner']:
         return True
     return False
 
@@ -215,26 +218,44 @@ def can_edit_bank(request, bank):
     :param name: Bank
     :type name: :class:`biomaj.bank.Bank.bank`
     '''
-    user_id = request.authenticated_userid
-    if user_id is None:
+    user = is_authenticated(request)
+    if user is None:
         return False
+
     # settings = request.registry.settings
-    if is_admin(request) or user_id == bank['properties']['owner']:
+    if is_admin(request, user) or user['id'] == bank['properties']['owner']:
         return True
     return False
 
 
-def is_authenticated(request):
+def __api_authentification(request):
     config = request.registry.settings['watcher_config']
-    user_id = request.authenticated_userid
-    if user_id:
-        r = requests.get(config['web']['local_endpoint'] + '/api/user/info/user/' + user_id)
-        if not r.status_code == 200:
-            return None
-        user = r.json()['user']
-        return user
-    else:
+    auth = request.headers['Authorization'].split()
+    user_id = auth[0]
+    api_key = auth[1]
+    r = requests.post(config['web']['local_endpoint'] + '/api/user/bind/user/' + user_id, json={'type': 'apikey', 'value': api_key})
+    if not r.status_code == 200:
         return None
+    user = r.json()['user']
+    return user
+
+def is_authenticated(request):
+    '''
+    Use session cookies or look at Authorization header with value:  USERNAME APIKEY
+    '''
+    config = request.registry.settings['watcher_config']
+    if 'Authorization' in request.headers and request.headers['Authorization']:
+        return __api_authentification(request)
+    else:
+        user_id = request.authenticated_userid
+        if user_id:
+            r = requests.get(config['web']['local_endpoint'] + '/api/user/info/user/' + user_id)
+            if not r.status_code == 200:
+                return None
+            user = r.json()['user']
+            return user
+        else:
+            return None
 
 
 def check_user_pw(request, username, password):
@@ -285,7 +306,7 @@ def is_auth_user(request):
     user = is_authenticated(request)
     is_user_admin = False
     if user:
-        if is_admin(request):
+        if is_admin(request, user):
             is_user_admin = True
     return { 'user': user, 'is_admin': is_user_admin }
 
@@ -563,23 +584,15 @@ def update_bank_config(request):
 def bank_release_remove(request):
     try:
         config = request.registry.settings['watcher_config']
-
-        user_id = request.authenticated_userid
-        if not user_id:
+        user = is_authenticated(request)
+        if not user:
             return HTTPForbidden()
-
         options = {
             'proxy': config['web']['local_endpoint'],
             'bank': request.matchdict['id'],
             'release': request.matchdict['release'],
             'remove': True
         }
-
-        # Get user apikey
-        r = requests.get(config['web']['local_endpoint'] + '/api/user/info/user/' + user_id)
-        if not r.status_code == 200:
-            return HTTPForbidden()
-        user = r.json()['user']
 
         headers = {}
         if user['apikey']:
@@ -603,9 +616,10 @@ def bank_update(request):
     try:
         config = request.registry.settings['watcher_config']
 
-        user_id = request.authenticated_userid
-        if not user_id:
+        user = is_authenticated(request)
+        if not user:
             return HTTPForbidden()
+
         body = request.body
         if sys.version_info >= (3,):
             body = request.body.decode()
@@ -621,11 +635,6 @@ def bank_update(request):
             'update': True
         }
 
-        # Get user apikey
-        r = requests.get(config['web']['local_endpoint'] + '/api/user/info/user/' + user_id)
-        if not r.status_code == 200:
-            return HTTPForbidden()
-        user = r.json()['user']
         headers = {}
         if user['apikey']:
             headers = {'Authorization': 'APIKEY ' + user['apikey']}
