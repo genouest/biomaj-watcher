@@ -71,6 +71,13 @@ def main(global_config, **settings):
     config.add_route('bankreleaseremove', '/bank/{id}/{release}')
     config.add_route('sessionlog', '/bank/{id}/log/{session}')
 
+    config.add_route('api_bank', '/api/watcher/bank')
+    config.add_route('api_bankdetails', '/api/watcher/bank/{id}')
+    config.add_route('api_bankconfig', '/api/watcher/bank/{id}/config')
+    config.add_route('api_banklocked', '/api/watcher/bank/{id}/locked')
+    config.add_route('api_bankstatus', '/api/watcher/bank/{id}/status')
+    config.add_route('api_sessionlog', '/api/watcher/bank/{id}/log/{session}')
+
     config.add_route('schedulebank','/schedule')
     config.add_route('updateschedulebank','/schedule/{name}')
 

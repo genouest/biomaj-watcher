@@ -249,6 +249,9 @@ def check_user_pw(request, username, password):
     user = r.json()['user']
     return user
 
+@view_config(route_name='api_banklocked', renderer='json', request_method='GET')
+def api_bank_locked(request):
+    return bank_lock(request)
 
 @view_config(route_name='banklocked', renderer='json', request_method='GET')
 def bank_locked(request):
@@ -261,6 +264,9 @@ def bank_locked(request):
     else:
         return {'status': 0}
 
+@view_config(route_name='api_bankstatus', renderer='json', request_method='GET')
+def api_bank_status(request):
+    return bank_status(request)
 
 @view_config(route_name='bankstatus', renderer='json', request_method='GET')
 def bank_status(request):
@@ -376,6 +382,9 @@ def get_procs(configparser, proc):
         })
     return res
 
+@view_config(route_name='api_bankconfig', renderer='json', request_method='GET')
+def api_bank_config(request):
+    return bank_config(request)
 
 @view_config(route_name='bankconfig', renderer='json', request_method='GET')
 def bank_config(request):
@@ -631,6 +640,10 @@ def bank_update(request):
         logging.error("Update error:"+ str(e))
         return {'msg': str(e)}
 
+@view_config(route_name='api_bankdetails', renderer='json', request_method='GET')
+def api_bank_details(request):
+    return bank_details(request)
+
 
 @view_config(route_name='bankdetails', renderer='json', request_method='GET')
 def bank_details(request):
@@ -648,6 +661,11 @@ def bank_details(request):
     if not can_read_bank(request, bank.bank):
         return HTTPForbidden('Not authorized to access this resource')
     return bank.bank
+
+
+@view_config(route_name='api_bank', renderer='json', request_method='GET')
+def api_bank_list(request):
+    return bank_list(request)
 
 
 @view_config(route_name='bank', renderer='json', request_method='GET')
@@ -684,6 +702,10 @@ def user_banks(request):
     return bank_list
 
 
+@view_config(route_name='api_sessionlog', request_method='GET')
+def api_session_log(request):
+    return session_log(request)
+
 @view_config(route_name='sessionlog', request_method='GET')
 def session_log(request):
   bank = Bank(request.matchdict['id'], no_log=True)
@@ -692,7 +714,7 @@ def session_log(request):
   log_file = None
   last_update = bank.bank['last_update_session']
   log_file = bank.bank['status']['log_file']['status']
-  if log_file is None:
+  if log_file is None or log_file == 'none':
     for session in bank.bank['sessions']:
       if session['id'] == float(request.matchdict['session']):
         log_file = session['log_file']

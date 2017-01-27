@@ -1,6 +1,7 @@
 3.0.9
 -----
 - Fix Old API
+- Add some /api/watcher endpoints and fix log file access
 3.0.8
 -----
 - update to match microservice architecture
