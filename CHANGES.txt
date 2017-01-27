@@ -3,10 +3,15 @@
 - Fix Old API
 - Add some /api/watcher endpoints and fix log file access
 - Add authorization header for API calls with format: Authorization: userid userapikey
+
 3.0.8
 -----
+
+#### Not compatible with biomaj 3.0.x for authenticated requests
+
 - update to match microservice architecture
 - change pymongo req
+
 
 3.0.7
 -----
