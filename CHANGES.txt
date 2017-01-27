@@ -1,4 +1,4 @@
-3.0.9
+3.1.0
 -----
 - Fix Old API
 - Add some /api/watcher endpoints and fix log file access
