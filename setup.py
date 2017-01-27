@@ -18,11 +18,12 @@ requires = [
     'ldap3',
     'gunicorn',
     'gevent',
-    'python-crontab==1.9.2',
     'future',
     'python-consul',
     'PyYAML',
-    'requests'
+    'requests',
+    'biomaj',
+    'biomaj-core'
     ]
 
 setup(name='biomajwatcher',

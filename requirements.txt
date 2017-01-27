@@ -23,3 +23,5 @@ future
 python-consul
 PyYAML
 requests
+biomaj
+biomaj-core
