@@ -27,3 +27,13 @@
     </div>
   </div>
 </div>
+
+<h3>Auto scheduling</h3>
+<div class="row">
+<table class="table">
+<tr><th>Bank</th><th>Next check</th></tr>
+<tr ng-repeat="bank in autoschedule">
+    <td>{{bank.name}}</td><td>{{schedule_date(bank.next)}}</td>
+</tr>
+</table>
+</div>

@@ -81,7 +81,7 @@ angular.module('biomaj').controller('biomajCtrl', ['$scope', '$rootScope', '$loc
     }]);
 
 angular.module('biomaj').controller('scheduleCtrl',
-    function ($scope, $rootScope, $routeParams, $log, $location, Bank, User, Auth, Schedule) {
+    function ($scope, $rootScope, $routeParams, $log, $location, $http, Bank, User, Auth, Schedule) {
       $scope.cron = [];
       Bank.list().$promise.then(function(banks) {
         var banknames = [];
@@ -149,6 +149,21 @@ angular.module('biomaj').controller('scheduleCtrl',
         }
         $scope.cron = data;
       });
+
+      $http({method: 'GET', url: '/api/release/schedule'})
+        .success(function(data){
+          $scope.msg = null;
+          $scope.autoschedule = data['schedule'];
+        })
+        .error(function(){
+          $scope.msg = 'Auto scheduling not available';
+          $scope.autoschedule = []
+        });
+
+        $scope.schedule_date = function(ts) {
+            if(ts==null) { return "Not planned"; }
+            return new Date(ts*1000);
+        }
 
     });
 
