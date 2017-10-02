@@ -35,6 +35,7 @@
         <div ng-repeat="p in bank.production">
           <div ng-if="bank.current == p.session" class="label label-info">Published</div>
           <div>Release: {{p.release}} <a ng-href="#/bank/{{name}}/{{p.release}}"><span class="glyphicon glyphicon-eye-open"> </span></a></div>
+          <div>Downloaded:{{session_to_date(p.session)}}</div>
           <button ng-click="remove(p.release)" class="btn btn-primary btn-sm" ng-if="user.is_admin">Remove <span class="glyphicon glyphicon-trash"> </span></button>
           <div>Remote release: {{p.remoterelease}}</div>
           <div>Formats: <ul ng-repeat="f in p.formats"><li>{{f}}</li></ul></div>

@@ -490,6 +490,11 @@ angular.module('biomaj').controller('bankCtrl',
       }
       $scope.name = $routeParams.name;
 
+      $scope.session_to_date = function(sess) {
+         return new Date(sess*1000);
+      };
+
+
       $scope.get_keys = function(obj) {
         var keys = [];
         for(var k in obj) { keys.push(k); }
