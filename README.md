@@ -64,7 +64,7 @@ You can easily customize the look of the watcher. Theme is pure CSS and CSS gile
 
 If you want to customize the theme, create a new theme CSS file (with an other name), and update the <link> reference to "_path_to_styles_/theme.css" to your new file in biomajwatcher/webapp/app/index.html.
 
-In index.html you can also add your logol, chnage header etc...
+In index.html you can also add your logo, change header, etc...
 
 # REST API
 
