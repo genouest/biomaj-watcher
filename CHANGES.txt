@@ -1,6 +1,7 @@
 3.1.2
 -----
 - Add download date
+- Allow endpoint definition per service
 
 3.1.1
 -----

@@ -15,6 +15,7 @@ import logging
 
 from biomaj.bank import Bank
 from biomaj_core.config import BiomajConfig
+from biomaj_core.utils import Utils
 
 if sys.version < '3':
     import ConfigParser as configparser
@@ -100,7 +101,8 @@ def ping(request):
 
 @view_config(route_name='schedulebank', renderer='json', request_method='GET')
 def getschedule(request):
-    r = requests.get(request.registry.settings['watcher_config']['web']['local_endpoint'] + '/api/cron/jobs')
+    proxy = Utils.get_service_endpoint(request.registry.settings['watcher_config'], 'cron')
+    r = requests.get(proxy + '/api/cron/jobs')
     if not r.status_code == 200:
         logging.error("Failed to contact cron service")
         return []
@@ -112,7 +114,8 @@ def getschedule(request):
 def unsetschedule(request):
     if not is_admin(request):
         return HTTPForbidden()
-    r = requests.delete(request.registry.settings['watcher_config']['web']['local_endpoint'] + '/api/cron/jobs/' + request.matchdict['name'])
+    proxy = Utils.get_service_endpoint(request.registry.settings['watcher_config'], 'cron')
+    r = requests.delete(proxy + '/api/cron/jobs/' + request.matchdict['name'])
     if not r.status_code == 200:
         logging.error("Failed to contact cron service")
     return []
@@ -130,7 +133,8 @@ def setschedule(request):
     cron_time = cron['slices']
     cron_banks = cron['banks']
     cron_newname = cron['comment']
-    r = requests.delete(request.registry.settings['watcher_config']['web']['local_endpoint'] + '/api/cron/jobs/' + cron_oldname)
+    proxy = Utils.get_service_endpoint(request.registry.settings['watcher_config'], 'cron')
+    r = requests.delete(proxy + '/api/cron/jobs/' + cron_oldname)
     if not r.status_code == 200:
         logging.error("Failed to contact cron service")
         return []
@@ -140,7 +144,8 @@ def setschedule(request):
         'banks': cron_banks,
         'comment': cron_newname
     }
-    r = requests.post(request.registry.settings['watcher_config']['web']['local_endpoint'] + '/api/cron/jobs/' + cron_newname, json=cron_task)
+    proxy = Utils.get_service_endpoint(request.registry.settings['watcher_config'], 'cron')
+    r = requests.post(proxy + '/api/cron/jobs/' + cron_newname, json=cron_task)
     if not r.status_code == 200:
         logging.error("Failed to contact cron service")
         return []
@@ -233,7 +238,8 @@ def __api_authentification(request):
     auth = request.headers['Authorization'].split()
     user_id = auth[0]
     api_key = auth[1]
-    r = requests.post(config['web']['local_endpoint'] + '/api/user/bind/user/' + user_id, json={'type': 'apikey', 'value': api_key})
+    proxy = Utils.get_service_endpoint(request.registry.settings['watcher_config'], 'user')
+    r = requests.post(proxy + '/api/user/bind/user/' + user_id, json={'type': 'apikey', 'value': api_key})
     if not r.status_code == 200:
         return None
     user = r.json()['user']
@@ -249,7 +255,8 @@ def is_authenticated(request):
     else:
         user_id = request.authenticated_userid
         if user_id:
-            r = requests.get(config['web']['local_endpoint'] + '/api/user/info/user/' + user_id)
+            proxy = Utils.get_service_endpoint(request.registry.settings['watcher_config'], 'user')
+            r = requests.get(proxy + '/api/user/info/user/' + user_id)
             if not r.status_code == 200:
                 return None
             user = r.json()['user']
@@ -263,7 +270,8 @@ def check_user_pw(request, username, password):
     config = request.registry.settings['watcher_config']
     if not password or password == '':
         return None
-    r = requests.post(config['web']['local_endpoint'] + '/api/user/bind/user/' + username, json={'type': 'password', 'value': password})
+    proxy = Utils.get_service_endpoint(request.registry.settings['watcher_config'], 'user')
+    r = requests.post(proxy + '/api/user/bind/user/' + username, json={'type': 'password', 'value': password})
     if not r.status_code == 200:
         logging.info("Wrong login for " + str(username))
         return None
@@ -587,8 +595,9 @@ def bank_release_remove(request):
         user = is_authenticated(request)
         if not user:
             return HTTPForbidden()
+        proxy = Utils.get_service_endpoint(request.registry.settings['watcher_config'], 'daemon')
         options = {
-            'proxy': config['web']['local_endpoint'],
+            'proxy': proxy,
             'bank': request.matchdict['id'],
             'release': request.matchdict['release'],
             'remove': True
@@ -628,8 +637,9 @@ def bank_update(request):
         if 'fromscratch' in form and int(form['fromscratch']) == 1:
             fromscratch = True
 
+        proxy = Utils.get_service_endpoint(request.registry.settings['watcher_config'], 'daemon')
         options = {
-            'proxy': config['web']['local_endpoint'],
+            'proxy': proxy,
             'bank': request.matchdict['id'],
             'fromscratch': fromscratch,
             'update': True
@@ -693,7 +703,8 @@ def user_list(request):
     if not is_admin(request):
         return HTTPForbidden('Not authorized to access this resource')
 
-    r = requests.get(request.registry.settings['watcher_config']['web']['local_endpoint'] + '/api/user/info/user')
+    proxy = Utils.get_service_endpoint(request.registry.settings['watcher_config'], 'user')
+    r = requests.get(proxy + '/api/user/info/user')
     if not r.status_code == 200:
         return HTTPNotFound()
     users = r.json()['users']

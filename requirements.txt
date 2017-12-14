@@ -24,4 +24,4 @@ python-consul
 PyYAML
 requests
 biomaj
-biomaj-core
+biomaj-core>=3.0.11
