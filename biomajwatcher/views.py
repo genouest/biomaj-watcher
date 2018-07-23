@@ -693,7 +693,7 @@ def bank_list(request):
     banks = Bank.list()
     bank_list = []
     for bank in banks:
-        if can_read_bank(request, bank):
+        if can_read_bank(request, bank) and bank.get('production', None):
             bank_list.append(bank)
     return bank_list
 
