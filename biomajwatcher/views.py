@@ -99,6 +99,10 @@ def ping(request):
     return {'msg': 'pong'}
 
 
+@view_config(route_name='api_schedulebank', renderer='json', request_method='GET')
+def api_getschedule(request):
+  return getschedule(request)
+
 @view_config(route_name='schedulebank', renderer='json', request_method='GET')
 def getschedule(request):
     proxy = Utils.get_service_endpoint(request.registry.settings['watcher_config'], 'cron')
@@ -110,6 +114,10 @@ def getschedule(request):
     return cron_jobs['cron']
 
 
+@view_config(route_name='api_updateschedulebank', renderer='json', request_method='DELETE')
+def api_unsetschedule(request):
+  return unsetschedule(request)
+
 @view_config(route_name='updateschedulebank', renderer='json', request_method='DELETE')
 def unsetschedule(request):
     if not is_admin(request):
@@ -120,6 +128,10 @@ def unsetschedule(request):
         logging.error("Failed to contact cron service")
     return []
 
+
+@view_config(route_name='api_updateschedulebank', renderer='json', request_method='POST')
+def api_setschedule(request):
+  return setschedule(request)
 
 @view_config(route_name='updateschedulebank', renderer='json', request_method='POST')
 def setschedule(request):
@@ -151,6 +163,9 @@ def setschedule(request):
         return []
     return []
 
+@view_config(route_name='api_search_format_type', renderer='json', request_method='GET')
+def api_search_format_type(request):
+  return search_format_type(request)
 
 @view_config(route_name='search_format_type', renderer='json', request_method='GET')
 def search_format_type(request):
@@ -159,6 +174,9 @@ def search_format_type(request):
     banks = Bank.search([bank_format], [bank_type],True)
     return get_files_matching_request(banks, bank_format, bank_type)
 
+@view_config(route_name='api_search_format', renderer='json', request_method='GET')
+def api_search_format(request):
+  return search_format(request)
 
 @view_config(route_name='search_format', renderer='json', request_method='GET')
 def search_format(request):
@@ -166,6 +184,9 @@ def search_format(request):
     banks = Bank.search([bank_format], [],True)
     return get_files_matching_request(banks, bank_format, None)
 
+@view_config(route_name='api_search_type', renderer='json', request_method='GET')
+def api_search_type(request):
+  return search_type(request)
 
 @view_config(route_name='search_type', renderer='json', request_method='GET')
 def search_type(request):
@@ -173,12 +194,19 @@ def search_type(request):
     banks = Bank.search([], [bank_type],True)
     return get_files_matching_request(banks, None, bank_type)
 
+@view_config(route_name='api_search', renderer='json', request_method='GET')
+def api_search(request):
+  return search(request)
 
 @view_config(route_name='search', renderer='json', request_method='GET')
 def search(request):
     req = request.params.get('q')
     return Bank.searchindex(req)
 
+
+@view_config(route_name='api_stat', renderer='json', request_method='GET')
+def api_stat(request):
+  return stat(request)
 
 @view_config(route_name='stat', renderer='json', request_method='GET')
 def stat(request):
@@ -308,6 +336,10 @@ def bank_status(request):
     return bank.get_status()
 
 
+@view_config(route_name='api_is_auth', renderer='json', request_method='GET')
+def api_is_auth_user(request):
+  return is_auth_user(request)
+
 @view_config(route_name='is_auth', renderer='json', request_method='GET')
 def is_auth_user(request):
     settings = request.registry.settings
@@ -318,6 +350,10 @@ def is_auth_user(request):
             is_user_admin = True
     return { 'user': user, 'is_admin': is_user_admin }
 
+
+@view_config(route_name='api_auth', renderer='json', request_method='POST')
+def api_auth_user(request):
+  return auth_user(request)
 
 @view_config(route_name='auth', renderer='json', request_method='POST')
 def auth_user(request):
@@ -343,6 +379,9 @@ def auth_user(request):
       request.response.headerlist.extend(headers)
   return { 'user': user, 'is_admin': is_user_admin }
 
+@view_config(route_name='api_logout', renderer='json', request_method='GET')
+def api_logout(request):
+  return logout(request)
 
 @view_config(route_name='logout', renderer='json', request_method='GET')
 def logout(request):
@@ -697,6 +736,9 @@ def bank_list(request):
             bank_list.append(bank)
     return bank_list
 
+@view_config(route_name='api_user', renderer='json', request_method='GET')
+def api_user_list(request):
+  return user_list(request)
 
 @view_config(route_name='user', renderer='json', request_method='GET')
 def user_list(request):
@@ -710,6 +752,9 @@ def user_list(request):
     users = r.json()['users']
     return users
 
+@view_config(route_name='api_user_banks', renderer='json', request_method='GET')
+def api_user_banks(request):
+  return user_banks(request)
 
 @view_config(route_name='user_banks', renderer='json', request_method='GET')
 def user_banks(request):

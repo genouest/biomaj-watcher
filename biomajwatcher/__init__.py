@@ -60,8 +60,11 @@ def main(global_config, **settings):
     config.add_route('home', '/')
     config.add_route('ping', '/api/watcher')
 
-    config.add_route('user','/user')
-    config.add_route('user_banks','/user/{id}/banks')
+    config.add_route('user','/api/watcher/user')
+    config.add_route('user_banks','/api/watcher/user/{id}/banks')
+
+    config.add_route('api_user','/user')
+    config.add_route('api_user_banks','/user/{id}/banks')
 
     config.add_route('bank', '/bank')
     config.add_route('bankdetails', '/bank/{id}')
@@ -81,17 +84,29 @@ def main(global_config, **settings):
     config.add_route('schedulebank','/schedule')
     config.add_route('updateschedulebank','/schedule/{name}')
 
-    config.add_route('search', '/search')
+    config.add_route('api_schedulebank','/api/watcher/schedule')
+    config.add_route('api_updateschedulebank','/api/watcher/schedule/{name}')
 
+    config.add_route('search', '/search')
     config.add_route('search_format', '/search/format/{format}')
     config.add_route('search_format_type', '/search/format/{format}/type/{type}')
     config.add_route('search_type', '/search/type/{type}')
 
+    config.add_route('api_search', '/api/watcher/search')
+    config.add_route('api_search_format', '/api/watcher/search/format/{format}')
+    config.add_route('api_search_format_type', '/api/watcher/search/format/{format}/type/{type}')
+    config.add_route('api_search_type', '/api/watcher/search/type/{type}')
+
     config.add_route('stat', '/stat')
+    config.add_route('api_stat', '/api/watcher/stat')
 
     config.add_route('is_auth', '/auth')
     config.add_route('auth', '/auth/{id}')
     config.add_route('logout', '/logout')
+
+    config.add_route('api_is_auth', '/api/watcher/auth')
+    config.add_route('api_auth', '/api/watcher/auth/{id}')
+    config.add_route('api_logout', '/api/watcher/logout')
 
     config.add_route('old_api', 'BmajWatcher/GET')
 
