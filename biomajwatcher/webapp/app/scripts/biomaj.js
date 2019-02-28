@@ -261,7 +261,7 @@ angular.module('biomaj').controller('sessionLogCtrl',
     function ($scope, $routeParams, $log, $http) {
       $scope.session = $routeParams.session;
       $scope.bank = $routeParams.name;
-      $http({method: 'GET', url: '/bank/'+$routeParams.name+'/log/'+$routeParams.session})
+      $http({method: 'GET', url: '/api/watcher/bank/'+$routeParams.name+'/log/'+$routeParams.session})
         .success(function(data){
           $scope.log = data;
         })

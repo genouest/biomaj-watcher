@@ -54,7 +54,7 @@
   }
 
     function Stat($resource) {
-        return $resource('/stat', {}, {
+        return $resource('/api/watcher/stat', {}, {
             list: {
               method: 'GET',
               isArray: true,
@@ -64,7 +64,7 @@
     }
 
     function Search($resource) {
-        return $resource('/search', {}, {
+        return $resource('/api/watcher/search', {}, {
             list: {
               method: 'GET',
               isArray: true,
@@ -74,20 +74,20 @@
     }
 
     function Schedule($resource) {
-        return $resource('/schedule', {}, {
+        return $resource('/api/watcher/schedule', {}, {
             list: {
               method: 'GET',
               isArray: true,
               cache: false
             },
             update: {
-              url: '/schedule/:name',
+              url: '/api/watcher/schedule/:name',
               method: 'POST',
               isArray: true,
               cache: false
             },
             remove: {
-              url: '/schedule/:name',
+              url: '/api/watcher/schedule/:name',
               method: 'DELETE',
               isArray: true,
               cache: false
@@ -96,48 +96,48 @@
     }
 
     function BankStatus($resource) {
-      return $resource('/bank/:name/status');
+      return $resource('/api/watcher/bank/:name/status');
     }
 
     function Bank($resource) {
-        return $resource('/bank', {}, {
+        return $resource('/api/watcher/bank', {}, {
             list: {
               method: 'GET',
               isArray: true,
               cache: true
             },
             get: {
-              url: '/bank/:name',
+              url: '/api/watcher/bank/:name',
               method: 'GET',
               isArray: false,
               cache: false
             },
             config: {
-              url: '/bank/:name/config',
+              url: '/api/watcher/bank/:name/config',
               method: 'GET',
               isArray: false,
               cache: false
             },
             saveconfig: {
-              url: '/bank/:name/config',
+              url: '/api/watcher/bank/:name/config',
               method: 'POST',
               isArray: false,
               cache: false
             },
             locked: {
-              url: '/bank/:name/locked',
+              url: '/api/watcher/bank/:name/locked',
               method: 'GET',
               isArray: false,
               cache: false
             },
             delete: {
-              url: '/bank/:name/:release',
+              url: '/api/watcher/bank/:name/:release',
               method: 'DELETE',
               isArray: false,
               cache: false
             },
             update: {
-              url: '/bank/:name',
+              url: '/api/watcher/bank/:name',
               method: 'PUT',
               isArray: false,
               cache: false
@@ -147,38 +147,38 @@
     }
 
     function Logout($resource) {
-      return $resource('/logout');
+      return $resource('/api/watcher/logout');
     }
 
     function User($resource) {
         //var user = null;
-        return $resource('/auth', {}, {
+        return $resource('/api/watcher/auth', {}, {
             list: {
-              url: '/user',
+              url: '/api/watcher/user',
               method: 'GET',
               isArray: true,
               cache: true
             },
             get: {
-              url: '/user/:name',
+              url: '/api/watcher/user/:name',
               method: 'GET',
               isArray: false,
               cache: true
             },
             is_authenticated: {
-              url: '/auth',
+              url: '/api/watcher/auth',
               method: 'GET',
               isArray: false,
               cache: false
             },
             authenticate: {
-              url: '/auth/:name',
+              url: '/api/watcher/auth/:name',
               method: 'POST',
               isArray: false,
               cache: false
             },
             banks: {
-              url: '/user/:name/banks',
+              url: '/api/watcher/user/:name/banks',
               method: 'GET',
               isArray: true,
               cache: false
