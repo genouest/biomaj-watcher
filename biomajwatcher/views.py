@@ -308,7 +308,7 @@ def check_user_pw(request, username, password):
 
 @view_config(route_name='api_banklocked', renderer='json', request_method='GET')
 def api_bank_locked(request):
-    return bank_lock(request)
+    return bank_locked(request)
 
 @view_config(route_name='banklocked', renderer='json', request_method='GET')
 def bank_locked(request):
