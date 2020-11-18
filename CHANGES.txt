@@ -1,3 +1,7 @@
+3.1.4
+-----
+- Add missing /bank endpoint declaration for traefik
+
 3.1.3
 -----
 - Add traefik endpoints

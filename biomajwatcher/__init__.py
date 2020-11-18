@@ -49,7 +49,8 @@ def main(global_config, **settings):
                 'watcher',
                 'static',
                 'traefik.backend=biomaj-watcher',
-                'traefik.frontend.rule=PathPrefix:/app',
+                'traefik.frontends.current.rule=PathPrefix:/app',
+                'traefik.frontends.old.rule=PathPrefix:/bank',
                 'traefik.enable=true'
             ]
         )
