@@ -7,6 +7,10 @@ from pyramid.authorization import ACLAuthorizationPolicy
 
 import consul
 import yaml
+try:
+    from yaml import CLoader as Loader
+except ImportError:
+    from yaml import Loader
 import os
 import sys
 import json
@@ -28,7 +32,7 @@ def main(global_config, **settings):
 
     config = None
     with open(config_file, 'r') as ymlfile:
-        config = yaml.load(ymlfile)
+        config = yaml.load(ymlfile, Loader=Loader)
         Utils.service_config_override(config)
 
     BiomajConfig.load_config(config['biomaj']['config'])

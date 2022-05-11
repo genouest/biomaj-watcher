@@ -13,7 +13,7 @@ requires = [
     'pyramid_chameleon',
     'pyramid_debugtoolbar',
     'waitress',
-    'pymongo',
+    'pymongo>=3.12.3,<4',
     'py-bcrypt',
     'ldap3',
     'gunicorn',
@@ -27,14 +27,13 @@ requires = [
     ]
 
 setup(name='biomajwatcher',
-      version='3.1.4',
+      version='3.1.5',
       description='biomaj-watcher',
       long_description=README + '\n\n' + CHANGES,
       classifiers=[
         "Programming Language :: Python",
         "Framework :: Pyramid",
-        "Programming Language :: Python :: 2",
-        "Programming Language :: Python :: 2.7",
+        "Programming Language :: Python :: 3",
         "Topic :: Internet :: WWW/HTTP",
         "Topic :: Internet :: WWW/HTTP :: WSGI :: Application",
         ],
