@@ -8,23 +8,8 @@ with open(os.path.join(here, 'README.md')) as f:
 with open(os.path.join(here, 'CHANGES.txt')) as f:
     CHANGES = f.read()
 
-requires = [
-    'pyramid==1.5.1',
-    'pyramid_chameleon',
-    'pyramid_debugtoolbar',
-    'waitress',
-    'pymongo>=3.12.3,<4',
-    'py-bcrypt',
-    'ldap3',
-    'gunicorn',
-    'gevent',
-    'future',
-    'python-consul',
-    'PyYAML',
-    'requests',
-    'biomaj',
-    'biomaj-core'
-    ]
+with open('requirements.txt') as f:
+    requirements = f.read().splitlines()
 
 setup(name='biomajwatcher',
       version='3.1.5',
@@ -44,8 +29,8 @@ setup(name='biomajwatcher',
       packages=find_packages(),
       include_package_data=True,
       zip_safe=False,
-      install_requires=requires,
-      tests_require=requires,
+      install_requires=requirements,
+      tests_require=requirements,
       test_suite="biomajwatcher",
       entry_points="""\
       [paste.app_factory]
