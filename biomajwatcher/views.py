@@ -364,7 +364,11 @@ def auth_user(request):
     body = request.body
     if sys.version_info >= (3,):
         body = request.body.decode()
-    form = json.loads(body, encoding=request.charset)
+    # encoding is deprecated after 3.9
+    if sys.version_info < (3, 9):
+      form = json.loads(body, encoding=request.charset)
+    else:
+      form = json.loads(body)
     password = form['password']
     user = check_user_pw(request, user_id, password)
   except Exception as e:
